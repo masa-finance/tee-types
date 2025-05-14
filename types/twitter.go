@@ -3,17 +3,6 @@ package types
 
 import "time"
 
-// TwitterSearchArguments defines arguments for Twitter searches
-type TwitterSearchArguments struct {
-	QueryType  string `json:"type"`  // Optional, type of search
-	Query      string `json:"query"` // Username or search query
-	Count      int    `json:"count"`
-	StartTime  string `json:"start_time"`  // Optional ISO timestamp
-	EndTime    string `json:"end_time"`    // Optional ISO timestamp
-	MaxResults int    `json:"max_results"` // Optional, max number of results
-	NextCursor string `json:"next_cursor"`
-}
-
 type TweetResult struct {
 	ID             int64 `json:"id"`
 	TweetID        string
