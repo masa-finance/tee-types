@@ -31,10 +31,45 @@ import "github.com/masa-finance/tee-types/types"
 ### Core Types (`types/job.go`)
 
 - `Job`: Represents a task to be executed by a worker
+  ```go
+  type Job struct {
+      Type      string       `json:"type"`
+      Arguments JobArguments `json:"arguments"`
+      UUID      string       `json:"-"`
+      Nonce     string       `json:"quote"`
+      WorkerID  string       `json:"worker_id"`
+  }
+  ```
+
+- `JobArguments`: Map type for job arguments with unmarshal utility
+  ```go
+  type JobArguments map[string]interface{}
+  ```
+
 - `JobResult`: Represents the result of executing a job
-- `JobArguments`: Map type for job arguments
 - `JobRequest`: Represents a request to execute a job
-- Job type constants for common job types (Web, Twitter)
+- Common job type constants (Web, Twitter)
+
+### Twitter Types (`types/twitter.go`)
+
+- `TwitterSearchParams`: Parameters for Twitter searches
+  ```go
+  type TwitterSearchParams struct {
+      ScraperType            string                `json:"type"`      // Type of search
+      TwitterSearchArguments `json:"arguments"`    // Search arguments
+  }
+  ```
+
+- `TwitterSearchArguments`: Arguments for Twitter searches
+  ```go
+  type TwitterSearchArguments struct {
+      Query      string `json:"query"`       // Username or search query
+      QueryType  string `json:"type"`        // Optional, type of search
+      StartTime  string `json:"start_time"`  // Optional ISO timestamp
+      EndTime    string `json:"end_time"`    // Optional ISO timestamp
+      MaxResults int    `json:"max_results"` // Optional, max number of results
+  }
+  ```
 
 ### Cryptographic Types (`types/crypto.go`)
 

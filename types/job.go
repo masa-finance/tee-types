@@ -1,10 +1,21 @@
 // Package types contains the minimal shared type definitions for tee-worker and tee-indexer
 package types
 
-// No imports needed
+import (
+	"encoding/json"
+)
 
 // JobArguments represents arguments passed to a job
 type JobArguments map[string]interface{}
+
+// Unmarshal unmarshals job arguments into the supplied interface
+func (ja JobArguments) Unmarshal(i interface{}) error {
+	dat, err := json.Marshal(ja)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(dat, i)
+}
 
 // Job represents a task to be executed by a worker
 type Job struct {
