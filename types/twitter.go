@@ -3,10 +3,11 @@ package types
 
 // TwitterSearchArguments defines arguments for Twitter searches
 type TwitterSearchArguments struct {
-	Query      string `json:"query"`       // Username or search query
-	QueryType  string `json:"type"`        // Optional, type of search
+	QueryType  string `json:"type"`  // Optional, type of search
+	Query      string `json:"query"` // Username or search query
+	Count      int    `json:"count"`
 	StartTime  string `json:"start_time"`  // Optional ISO timestamp
 	EndTime    string `json:"end_time"`    // Optional ISO timestamp
 	MaxResults int    `json:"max_results"` // Optional, max number of results
-	NextCursor string `json:"next_cursor"` // Optional, cursor for pagination
+	NextCursor string `json:"next_cursor"`
 }
