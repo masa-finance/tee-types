@@ -1,4 +1,4 @@
-package types
+package args
 
 type WebSearchArguments struct {
 	URL      string `json:"url"`

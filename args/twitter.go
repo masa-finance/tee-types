@@ -1,5 +1,4 @@
-// Package types provides shared types between tee-worker and tee-indexer
-package types
+package args
 
 // TwitterSearchArguments defines args for Twitter searches
 type TwitterSearchArguments struct {
