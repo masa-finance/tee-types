@@ -23,6 +23,74 @@ const (
 
 )
 
+// Capability constants - typed to prevent typos and enable discoverability
+const (
+	// Web scraping capabilities
+	CapWebScraper Capability = "web-scraper"
+
+	// Telemetry capabilities
+	CapTelemetry Capability = "telemetry"
+
+	// TikTok capabilities
+	CapTiktokTranscription Capability = "tiktok-transcription"
+
+	// Twitter capabilities
+	CapSearchByQuery       Capability = "searchbyquery"
+	CapSearchByFullArchive Capability = "searchbyfullarchive"
+	CapSearchByProfile     Capability = "searchbyprofile"
+	CapGetById             Capability = "getbyid"
+	CapGetReplies          Capability = "getreplies"
+	CapGetRetweeters       Capability = "getretweeters"
+	CapGetTweets           Capability = "gettweets"
+	CapGetMedia            Capability = "getmedia"
+	CapGetHomeTweets       Capability = "gethometweets"
+	CapGetForYouTweets     Capability = "getforyoutweets"
+	CapGetProfileById      Capability = "getprofilebyid"
+	CapGetTrends           Capability = "gettrends"
+	CapGetFollowing        Capability = "getfollowing"
+	CapGetFollowers        Capability = "getfollowers"
+	CapGetSpace            Capability = "getspace"
+)
+
+// Capability group constants for easy reuse
+var (
+	// AlwaysAvailableWebCaps are web capabilities always available
+	AlwaysAvailableWebCaps = []Capability{CapWebScraper}
+
+	// AlwaysAvailableTelemetryCaps are telemetry capabilities always available
+	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry}
+
+	// AlwaysAvailableTiktokCaps are TikTok capabilities always available
+	AlwaysAvailableTiktokCaps = []Capability{CapTiktokTranscription}
+
+	// TwitterAllCaps are all Twitter capabilities available with credential-based auth
+	TwitterAllCaps = []Capability{
+		CapSearchByQuery, CapSearchByFullArchive, CapSearchByProfile,
+		CapGetById, CapGetReplies, CapGetRetweeters, CapGetTweets, CapGetMedia,
+		CapGetHomeTweets, CapGetForYouTweets, CapGetProfileById,
+		CapGetTrends, CapGetFollowing, CapGetFollowers, CapGetSpace,
+	}
+
+	// TwitterAPICaps are basic Twitter capabilities available with API keys
+	TwitterAPICaps = []Capability{CapSearchByQuery, CapGetById, CapGetProfileById}
+
+	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
+	AlwaysAvailableCapabilities = WorkerCapabilities{
+		{
+			JobType:      WebJob.String(),
+			Capabilities: AlwaysAvailableWebCaps,
+		},
+		{
+			JobType:      TelemetryJob.String(),
+			Capabilities: AlwaysAvailableTelemetryCaps,
+		},
+		{
+			JobType:      TiktokJob.String(),
+			Capabilities: AlwaysAvailableTiktokCaps,
+		},
+	}
+)
+
 // String returns the string representation of the JobType
 func (j JobType) String() string {
 	return string(j)
