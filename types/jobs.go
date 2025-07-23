@@ -8,21 +8,19 @@ type JobType string
 // Job type constants - centralized from tee-indexer and tee-worker
 const (
 	// Web scraping job type
-	WebJob JobType = "web-scraper"
+	WebJob JobType = "web"
 
 	// Telemetry job type for worker monitoring and stats
 	TelemetryJob JobType = "telemetry"
 
 	// TikTok transcription job type
-	TiktokJob JobType = "tiktok-transcription"
+	TiktokJob JobType = "tiktok"
 
 	// Twitter job types
-	TwitterJob           JobType = "twitter-scraper"            // General Twitter scraping (uses best available auth)
-	TwitterCredentialJob JobType = "twitter-credential-scraper" // Twitter scraping with credentials
-	TwitterApiJob        JobType = "twitter-api-scraper"        // Twitter scraping with API keys
+	TwitterJob           JobType = "twitter"            // General Twitter scraping (uses best available auth)
+	TwitterCredentialJob JobType = "twitter-credential" // Twitter scraping with credentials
+	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 
-	// Unknown/invalid job type
-	UnknownJob JobType = ""
 )
 
 // String returns the string representation of the JobType
