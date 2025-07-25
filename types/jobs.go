@@ -77,15 +77,15 @@ var (
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
 		{
-			JobType:      WebJob.String(),
+			JobType:      WebJob,
 			Capabilities: AlwaysAvailableWebCaps,
 		},
 		{
-			JobType:      TelemetryJob.String(),
+			JobType:      TelemetryJob,
 			Capabilities: AlwaysAvailableTelemetryCaps,
 		},
 		{
-			JobType:      TiktokJob.String(),
+			JobType:      TiktokJob,
 			Capabilities: AlwaysAvailableTiktokCaps,
 		},
 	}
@@ -98,7 +98,7 @@ func (j JobType) String() string {
 
 // JobCapability represents the capabilities of a specific job type
 type JobCapability struct {
-	JobType      string       `json:"job_type"`
+	JobType      JobType      `json:"job_type"`
 	Capabilities []Capability `json:"capabilities"`
 }
 
