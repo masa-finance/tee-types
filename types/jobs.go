@@ -65,7 +65,7 @@ var (
 
 	// TwitterAllCaps are all Twitter capabilities available with credential-based auth
 	TwitterAllCaps = []Capability{
-		CapSearchByQuery, CapSearchByFullArchive, CapSearchByProfile,
+		CapSearchByQuery, CapSearchByProfile,
 		CapGetById, CapGetReplies, CapGetRetweeters, CapGetTweets, CapGetMedia,
 		CapGetHomeTweets, CapGetForYouTweets, CapGetProfileById,
 		CapGetTrends, CapGetFollowing, CapGetFollowers, CapGetSpace,
