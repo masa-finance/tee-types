@@ -26,13 +26,13 @@ const (
 // Capability constants - typed to prevent typos and enable discoverability
 const (
 	// Web scraping capabilities
-	CapWebScraper Capability = "web-scraper"
+	CapWebScraper Capability = "scraper"
 
 	// Telemetry capabilities
 	CapTelemetry Capability = "telemetry"
 
 	// TikTok capabilities
-	CapTiktokTranscription Capability = "tiktok-transcription"
+	CapTiktokTranscription Capability = "transcription"
 
 	// Twitter capabilities
 	CapSearchByQuery       Capability = "searchbyquery"
@@ -63,8 +63,8 @@ var (
 	// AlwaysAvailableTiktokCaps are TikTok capabilities always available
 	AlwaysAvailableTiktokCaps = []Capability{CapTiktokTranscription}
 
-	// TwitterAllCaps are all Twitter capabilities available with credential-based auth
-	TwitterAllCaps = []Capability{
+	// TwitterCredentialCaps are all Twitter capabilities available with credential-based auth
+	TwitterCredentialCaps = []Capability{
 		CapSearchByQuery, CapSearchByProfile,
 		CapGetById, CapGetReplies, CapGetRetweeters, CapGetTweets, CapGetMedia,
 		CapGetHomeTweets, CapGetForYouTweets, CapGetProfileById,
@@ -76,18 +76,9 @@ var (
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
-		{
-			JobType:      WebJob,
-			Capabilities: AlwaysAvailableWebCaps,
-		},
-		{
-			JobType:      TelemetryJob,
-			Capabilities: AlwaysAvailableTelemetryCaps,
-		},
-		{
-			JobType:      TiktokJob,
-			Capabilities: AlwaysAvailableTiktokCaps,
-		},
+		WebJob:       AlwaysAvailableWebCaps,
+		TelemetryJob: AlwaysAvailableTelemetryCaps,
+		TiktokJob:    AlwaysAvailableTiktokCaps,
 	}
 )
 
@@ -96,11 +87,6 @@ func (j JobType) String() string {
 	return string(j)
 }
 
-// JobCapability represents the capabilities of a specific job type
-type JobCapability struct {
-	JobType      JobType      `json:"job_type"`
-	Capabilities []Capability `json:"capabilities"`
-}
-
 // WorkerCapabilities represents all capabilities available on a worker
-type WorkerCapabilities []JobCapability
+// Maps JobType to the list of capabilities available for that job type
+type WorkerCapabilities map[JobType][]Capability
