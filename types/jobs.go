@@ -20,6 +20,7 @@ const (
 	TwitterJob           JobType = "twitter"            // General Twitter scraping (uses best available auth)
 	TwitterCredentialJob JobType = "twitter-credential" // Twitter scraping with credentials
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
+	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
 
 )
 
@@ -73,6 +74,9 @@ var (
 
 	// TwitterAPICaps are basic Twitter capabilities available with API keys
 	TwitterAPICaps = []Capability{CapSearchByQuery, CapGetById, CapGetProfileById}
+
+	// TwitterApifyCaps are Twitter capabilities available with Apify
+	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
