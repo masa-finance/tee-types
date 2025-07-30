@@ -3,6 +3,9 @@ package args
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
+
+	teetypes "github.com/masa-finance/tee-types/types"
 )
 
 // LinkedInArguments defines args for LinkedIn operations
@@ -26,6 +29,11 @@ func (l *LinkedInArguments) UnmarshalJSON(data []byte) error {
 
 	if err := json.Unmarshal(data, aux); err != nil {
 		return fmt.Errorf("failed to unmarshal LinkedIn arguments: %w", err)
+	}
+
+	// Normalize QueryType to lowercase
+	if l.QueryType != "" {
+		l.QueryType = strings.ToLower(l.QueryType)
 	}
 
 	return l.Validate()
@@ -59,6 +67,21 @@ func (l *LinkedInArguments) Validate() error {
 	}
 
 	return nil
+}
+
+// ValidateForJobType validates LinkedIn arguments for a specific job type
+func (l *LinkedInArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := l.Validate(); err != nil {
+		return err
+	}
+
+	// Validate QueryType against job-specific capabilities
+	return ValidateCapabilityForJobType(jobType, teetypes.Capability(l.QueryType))
+}
+
+// GetCapability returns the QueryType as a typed Capability
+func (l *LinkedInArguments) GetCapability() teetypes.Capability {
+	return teetypes.Capability(l.QueryType)
 }
 
 // LinkedInSearchArguments is an alias for LinkedInArguments for backward compatibility.

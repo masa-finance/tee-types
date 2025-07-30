@@ -22,6 +22,9 @@ const (
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
 
+	// LinkedIn job types
+	LinkedInJob JobType = "linkedin" // LinkedIn scraping and profile operations
+
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -51,6 +54,9 @@ const (
 	CapGetFollowing        Capability = "getfollowing"
 	CapGetFollowers        Capability = "getfollowers"
 	CapGetSpace            Capability = "getspace"
+
+	// LinkedIn capabilities
+	CapGetProfile Capability = "getprofile"
 )
 
 // Capability group constants for easy reuse
@@ -77,6 +83,9 @@ var (
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing}
+
+	// LinkedInCaps are LinkedIn capabilities (basic set for future implementation)
+	LinkedInCaps = []Capability{CapSearchByQuery, CapGetProfile}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{

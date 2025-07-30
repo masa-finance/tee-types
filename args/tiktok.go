@@ -90,6 +90,16 @@ func (t *TikTokTranscriptionArguments) GetLanguageCode() string {
 	return t.Language
 }
 
+// ValidateForJobType validates TikTok arguments for a specific job type
+func (t *TikTokTranscriptionArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := t.Validate(); err != nil {
+		return err
+	}
+
+	// Validate capability against job-specific capabilities
+	return ValidateCapabilityForJobType(jobType, t.GetCapability())
+}
+
 // validateLanguageCode validates the language code format
 func (t *TikTokTranscriptionArguments) validateLanguageCode() error {
 	// Basic validation for language codes like "en-us", "es-es", etc.

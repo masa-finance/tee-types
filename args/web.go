@@ -63,6 +63,16 @@ func (w *WebSearchArguments) Validate() error {
 	return nil
 }
 
+// ValidateForJobType validates Web arguments for a specific job type
+func (w *WebSearchArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := w.Validate(); err != nil {
+		return err
+	}
+
+	// Validate capability against job-specific capabilities
+	return ValidateCapabilityForJobType(jobType, w.GetCapability())
+}
+
 // GetCapability returns the capability for web operations (always scraper)
 func (w *WebSearchArguments) GetCapability() teetypes.Capability {
 	return teetypes.CapWebScraper

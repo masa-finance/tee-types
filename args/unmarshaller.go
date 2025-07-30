@@ -23,6 +23,7 @@ type TwitterJobArgumentsInterface interface {
 // WebJobArgumentsInterface extends JobArgumentsInterface for Web-specific methods
 type WebJobArgumentsInterface interface {
 	JobArgumentsInterface
+	ValidateForJobType(jobType types.JobType) error
 	IsDeepScrape() bool
 	HasSelector() bool
 	GetEffectiveMaxDepth() int
@@ -31,8 +32,15 @@ type WebJobArgumentsInterface interface {
 // TikTokJobArgumentsInterface extends JobArgumentsInterface for TikTok-specific methods
 type TikTokJobArgumentsInterface interface {
 	JobArgumentsInterface
+	ValidateForJobType(jobType types.JobType) error
 	HasLanguagePreference() bool
 	GetLanguageCode() string
+}
+
+// LinkedInJobArgumentsInterface extends JobArgumentsInterface for LinkedIn-specific methods
+type LinkedInJobArgumentsInterface interface {
+	JobArgumentsInterface
+	ValidateForJobType(jobType types.JobType) error
 }
 
 // UnmarshalJobArguments unmarshals job arguments from a generic map into the appropriate typed struct
@@ -41,16 +49,19 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 	switch jobType {
 	case types.WebJob:
 		return unmarshalWebArguments(args)
-		
+
 	case types.TiktokJob:
 		return unmarshalTikTokArguments(args)
-		
+
 	case types.TwitterJob, types.TwitterCredentialJob, types.TwitterApiJob, types.TwitterApifyJob:
 		return unmarshalTwitterArguments(jobType, args)
-		
+
+	case types.LinkedInJob:
+		return unmarshalLinkedInArguments(jobType, args)
+
 	case types.TelemetryJob:
 		return &TelemetryJobArguments{}, nil
-		
+
 	default:
 		return nil, fmt.Errorf("unknown job type: %s", jobType)
 	}
@@ -78,13 +89,27 @@ func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*Twi
 	if err := unmarshalToStruct(args, twitterArgs); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal Twitter job arguments: %w", err)
 	}
-	
+
 	// Perform job-type-specific validation for Twitter
 	if err := twitterArgs.ValidateForJobType(jobType); err != nil {
 		return nil, fmt.Errorf("Twitter job validation failed: %w", err)
 	}
-	
+
 	return twitterArgs, nil
+}
+
+func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (*LinkedInArguments, error) {
+	linkedInArgs := &LinkedInArguments{}
+	if err := unmarshalToStruct(args, linkedInArgs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal LinkedIn job arguments: %w", err)
+	}
+
+	// Perform job-type-specific validation for LinkedIn
+	if err := linkedInArgs.ValidateForJobType(jobType); err != nil {
+		return nil, fmt.Errorf("LinkedIn job validation failed: %w", err)
+	}
+
+	return linkedInArgs, nil
 }
 
 // unmarshalToStruct converts a map[string]any to a struct using JSON marshal/unmarshal
@@ -95,11 +120,11 @@ func unmarshalToStruct(args map[string]any, target any) error {
 	if err != nil {
 		return fmt.Errorf("failed to marshal arguments: %w", err)
 	}
-	
+
 	if err := json.Unmarshal(data, target); err != nil {
 		return fmt.Errorf("failed to unmarshal arguments: %w", err)
 	}
-	
+
 	return nil
 }
 
@@ -142,4 +167,12 @@ func AsTikTokArguments(args JobArgumentsInterface) (TikTokJobArgumentsInterface,
 func AsTelemetryArguments(args JobArgumentsInterface) (*TelemetryJobArguments, bool) {
 	telemetryArgs, ok := args.(*TelemetryJobArguments)
 	return telemetryArgs, ok
+}
+
+func AsLinkedInArguments(args JobArgumentsInterface) (LinkedInJobArgumentsInterface, bool) {
+	linkedInArgs, ok := args.(*LinkedInArguments)
+	if !ok {
+		return nil, false
+	}
+	return linkedInArgs, true
 }
