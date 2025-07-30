@@ -73,15 +73,12 @@ func (t *TwitterSearchArguments) GetCapability() teetypes.Capability {
 }
 
 // IsNonTweetOperation returns true if the QueryType represents a non-tweet operation
-// This replaces the manual string checking from the TODO comment
-// NO STRING CASTING - uses capability constants directly
 func (t *TwitterSearchArguments) IsNonTweetOperation() bool {
 	capability := t.GetCapability()
 
 	return capability == teetypes.CapSearchByProfile ||
 		capability == teetypes.CapGetRetweeters ||
 		capability == teetypes.CapGetProfileById ||
-		capability == teetypes.CapGetById ||
 		capability == teetypes.CapGetSpace ||
 		capability == teetypes.CapGetTrends ||
 		capability == teetypes.CapGetFollowing ||

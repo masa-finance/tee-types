@@ -31,9 +31,6 @@ var jobCapabilityMap = map[teetypes.JobType][]teetypes.Capability{
 
 	// Telemetry job capabilities
 	teetypes.TelemetryJob: teetypes.AlwaysAvailableTelemetryCaps,
-
-	// LinkedIn job capabilities
-	teetypes.LinkedInJob: teetypes.LinkedInCaps,
 }
 
 // ValidateCapabilityForJobType validates that a capability is supported for the given job type

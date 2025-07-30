@@ -56,9 +56,6 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 	case types.TwitterJob, types.TwitterCredentialJob, types.TwitterApiJob, types.TwitterApifyJob:
 		return unmarshalTwitterArguments(jobType, args)
 
-	case types.LinkedInJob:
-		return unmarshalLinkedInArguments(jobType, args)
-
 	case types.TelemetryJob:
 		return &TelemetryJobArguments{}, nil
 
