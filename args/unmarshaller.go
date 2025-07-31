@@ -18,6 +18,7 @@ type TwitterJobArgumentsInterface interface {
 	JobArgumentsInterface
 	ValidateForJobType(jobType types.JobType) error
 	IsNonTweetOperation() bool
+	IsSingleTweetOperation() bool
 }
 
 // WebJobArgumentsInterface extends JobArgumentsInterface for Web-specific methods

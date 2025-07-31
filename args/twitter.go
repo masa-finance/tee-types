@@ -82,3 +82,9 @@ func (t *TwitterSearchArguments) IsNonTweetOperation() bool {
 		capability == teetypes.CapGetFollowing ||
 		capability == teetypes.CapGetFollowers
 }
+
+// IsSingleTweetOperation returns true if the QueryType represents an operation that returns a single tweet
+func (t *TwitterSearchArguments) IsSingleTweetOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapGetById
+}
