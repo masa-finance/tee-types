@@ -85,7 +85,7 @@ func (t *TikTokTranscriptionArguments) HasLanguagePreference() bool {
 // GetLanguageCode returns the language code, defaulting to "en-us" if not specified
 func (t *TikTokTranscriptionArguments) GetLanguageCode() string {
 	if t.Language == "" {
-		return "en-us"
+		return "en-US"
 	}
 	return t.Language
 }
