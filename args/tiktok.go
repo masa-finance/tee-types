@@ -28,10 +28,10 @@ func (t *TikTokTranscriptionArguments) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
 	}
 
-	// Normalize language to lowercase if provided
-	if t.Language != "" {
-		t.Language = strings.ToLower(t.Language)
-	}
+	// // Normalize language to lowercase if provided
+	// if t.Language != "" {
+	// 	t.Language = strings.ToLower(t.Language)
+	// }
 
 	return t.Validate()
 }
@@ -102,14 +102,15 @@ func (t *TikTokTranscriptionArguments) ValidateForJobType(jobType teetypes.JobTy
 
 // validateLanguageCode validates the language code format
 func (t *TikTokTranscriptionArguments) validateLanguageCode() error {
-	// Basic validation for language codes like "en-us", "es-es", etc.
+	// Basic validation for language codes like "en-us", "eng-us", "es-es", etc.
 	parts := strings.Split(t.Language, "-")
 	if len(parts) != 2 {
-		return fmt.Errorf("invalid language format '%s', expected format: 'lang-region' (e.g., 'en-us')", t.Language)
+		return fmt.Errorf("invalid language format '%s', expected format: 'lang-region' (e.g., 'en-us' or 'eng-us')", t.Language)
 	}
 
-	if len(parts[0]) != 2 || len(parts[1]) != 2 {
-		return fmt.Errorf("invalid language format '%s', expected 2-letter language and region codes", t.Language)
+	// Language code can be 2 or 3 letters, region must be 2 letters
+	if (len(parts[0]) != 2 && len(parts[0]) != 3) || len(parts[1]) != 2 {
+		return fmt.Errorf("invalid language format '%s', expected 2-3 letter language code and 2-letter region code", t.Language)
 	}
 
 	return nil
