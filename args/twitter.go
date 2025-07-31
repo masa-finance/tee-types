@@ -42,9 +42,7 @@ func (t *TwitterSearchArguments) UnmarshalJSON(data []byte) error {
 
 // Validate validates the Twitter arguments (general validation)
 func (t *TwitterSearchArguments) Validate() error {
-	if t.Query == "" {
-		return fmt.Errorf("query is required")
-	}
+	// note, query is not required for all capabilities
 
 	if t.Count < 0 {
 		return fmt.Errorf("count must be non-negative, got: %d", t.Count)
