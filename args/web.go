@@ -75,7 +75,7 @@ func (w *WebSearchArguments) ValidateForJobType(jobType teetypes.JobType) error 
 
 // GetCapability returns the capability for web operations (always scraper)
 func (w *WebSearchArguments) GetCapability() teetypes.Capability {
-	return teetypes.CapWebScraper
+	return teetypes.CapScraper
 }
 
 // IsDeepScrape returns true if this is a deep scraping operation

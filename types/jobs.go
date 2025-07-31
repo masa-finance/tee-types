@@ -1,23 +1,37 @@
 package types
 
-type Capability string
-
-// JobType represents the type of job that can be executed
 type JobType string
+type Capability string
+type WorkerCapabilities map[JobType][]Capability
+
+// String returns the string representation of the JobType
+func (j JobType) String() string {
+	return string(j)
+}
+
+// combineCapabilities combines multiple capability slices and ensures uniqueness
+func combineCapabilities(capSlices ...[]Capability) []Capability {
+	seen := make(map[Capability]bool)
+	var result []Capability
+
+	for _, capSlice := range capSlices {
+		for _, cap := range capSlice {
+			if !seen[cap] {
+				seen[cap] = true
+				result = append(result, cap)
+			}
+		}
+	}
+
+	return result
+}
 
 // Job type constants - centralized from tee-indexer and tee-worker
 const (
-	// Web scraping job type
-	WebJob JobType = "web"
-
-	// Telemetry job type for worker monitoring and stats
-	TelemetryJob JobType = "telemetry"
-
-	// TikTok transcription job type
-	TiktokJob JobType = "tiktok"
-
-	// Twitter job types
-	TwitterJob           JobType = "twitter"            // General Twitter scraping (uses best available auth)
+	WebJob               JobType = "web"
+	TelemetryJob         JobType = "telemetry"
+	TiktokJob            JobType = "tiktok"
+	TwitterJob           JobType = "twitter"            // General Twitter scraping (uses best available auth for capability)
 	TwitterCredentialJob JobType = "twitter-credential" // Twitter scraping with credentials
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
@@ -25,16 +39,9 @@ const (
 
 // Capability constants - typed to prevent typos and enable discoverability
 const (
-	// Web scraping capabilities
-	CapWebScraper Capability = "scraper"
-
-	// Telemetry capabilities
-	CapTelemetry Capability = "telemetry"
-
-	// TikTok capabilities
-	CapTiktokTranscription Capability = "transcription"
-
-	// Twitter capabilities
+	CapScraper             Capability = "scraper"
+	CapTelemetry           Capability = "telemetry"
+	CapTranscription       Capability = "transcription"
 	CapSearchByQuery       Capability = "searchbyquery"
 	CapSearchByFullArchive Capability = "searchbyfullarchive"
 	CapSearchByProfile     Capability = "searchbyprofile"
@@ -54,14 +61,16 @@ const (
 
 // Capability group constants for easy reuse
 var (
-	// AlwaysAvailableWebCaps are web capabilities always available
-	AlwaysAvailableWebCaps = []Capability{CapWebScraper}
-
-	// AlwaysAvailableTelemetryCaps are telemetry capabilities always available
+	AlwaysAvailableWebCaps       = []Capability{CapScraper}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry}
+	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription}
 
-	// AlwaysAvailableTiktokCaps are TikTok capabilities always available
-	AlwaysAvailableTiktokCaps = []Capability{CapTiktokTranscription}
+	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
+	AlwaysAvailableCapabilities = WorkerCapabilities{
+		WebJob:       AlwaysAvailableWebCaps,
+		TelemetryJob: AlwaysAvailableTelemetryCaps,
+		TiktokJob:    AlwaysAvailableTiktokCaps,
+	}
 
 	// TwitterCredentialCaps are all Twitter capabilities available with credential-based auth
 	TwitterCredentialCaps = []Capability{
@@ -76,20 +85,41 @@ var (
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing}
-
-	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
-	AlwaysAvailableCapabilities = WorkerCapabilities{
-		WebJob:       AlwaysAvailableWebCaps,
-		TelemetryJob: AlwaysAvailableTelemetryCaps,
-		TiktokJob:    AlwaysAvailableTiktokCaps,
-	}
 )
 
-// String returns the string representation of the JobType
-func (j JobType) String() string {
-	return string(j)
+// JobCapabilityMap defines which capabilities are valid for each job type
+var JobCapabilityMap = map[JobType][]Capability{
+	// Twitter job types and their valid capabilities
+	TwitterJob: combineCapabilities(
+		TwitterCredentialCaps,
+		TwitterAPICaps,
+		TwitterApifyCaps,
+		[]Capability{CapSearchByFullArchive}, // Elevated API capability
+	),
+	TwitterCredentialJob: TwitterCredentialCaps,
+	TwitterApiJob: combineCapabilities(
+		TwitterAPICaps,
+		[]Capability{CapSearchByFullArchive}, // Elevated API capability
+	),
+	TwitterApifyJob: TwitterApifyCaps,
+
+	// Web job capabilities
+	WebJob: AlwaysAvailableWebCaps,
+
+	// TikTok job capabilities
+	TiktokJob: AlwaysAvailableTiktokCaps,
+
+	// Telemetry job capabilities
+	TelemetryJob: AlwaysAvailableTelemetryCaps,
 }
 
-// WorkerCapabilities represents all capabilities available on a worker
-// Maps JobType to the list of capabilities available for that job type
-type WorkerCapabilities map[JobType][]Capability
+// if no capability is specified, use the default capability for the job type
+var JobDefaultCapabilityMap = map[JobType]Capability{
+	TwitterJob:           CapSearchByQuery,
+	TwitterCredentialJob: CapSearchByQuery,
+	TwitterApiJob:        CapSearchByQuery,
+	TwitterApifyJob:      CapGetFollowing,
+	WebJob:               CapScraper,
+	TiktokJob:            CapTranscription,
+	TelemetryJob:         CapTelemetry,
+}

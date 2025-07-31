@@ -70,21 +70,41 @@ func (t *TwitterSearchArguments) GetCapability() teetypes.Capability {
 	return teetypes.Capability(t.QueryType)
 }
 
-// IsNonTweetOperation returns true if the QueryType represents a non-tweet operation
-func (t *TwitterSearchArguments) IsNonTweetOperation() bool {
-	capability := t.GetCapability()
-
-	return capability == teetypes.CapSearchByProfile ||
-		capability == teetypes.CapGetRetweeters ||
-		capability == teetypes.CapGetProfileById ||
-		capability == teetypes.CapGetSpace ||
-		capability == teetypes.CapGetTrends ||
-		capability == teetypes.CapGetFollowing ||
-		capability == teetypes.CapGetFollowers
-}
-
-// IsSingleTweetOperation returns true if the QueryType represents an operation that returns a single tweet
 func (t *TwitterSearchArguments) IsSingleTweetOperation() bool {
 	capability := t.GetCapability()
 	return capability == teetypes.CapGetById
+}
+
+func (t *TwitterSearchArguments) IsMultipleTweetOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapSearchByQuery ||
+		capability == teetypes.CapSearchByFullArchive ||
+		capability == teetypes.CapGetHomeTweets ||
+		capability == teetypes.CapGetForYouTweets ||
+		capability == teetypes.CapGetTweets ||
+		capability == teetypes.CapGetReplies ||
+		capability == teetypes.CapGetMedia
+}
+
+func (t *TwitterSearchArguments) IsSingleProfileOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapGetProfileById ||
+		capability == teetypes.CapSearchByProfile
+}
+
+func (t *TwitterSearchArguments) IsMultipleProfileOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapGetFollowing ||
+		capability == teetypes.CapGetFollowers ||
+		capability == teetypes.CapGetRetweeters
+}
+
+func (t *TwitterSearchArguments) IsSingleSpaceOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapGetSpace
+}
+
+func (t *TwitterSearchArguments) IsTrendsOperation() bool {
+	capability := t.GetCapability()
+	return capability == teetypes.CapGetTrends
 }

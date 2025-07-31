@@ -17,8 +17,12 @@ type JobArgumentsInterface interface {
 type TwitterJobArgumentsInterface interface {
 	JobArgumentsInterface
 	ValidateForJobType(jobType types.JobType) error
-	IsNonTweetOperation() bool
 	IsSingleTweetOperation() bool
+	IsMultipleTweetOperation() bool
+	IsSingleProfileOperation() bool
+	IsMultipleProfileOperation() bool
+	IsSingleSpaceOperation() bool
+	IsTrendsOperation() bool
 }
 
 // WebJobArgumentsInterface extends JobArgumentsInterface for Web-specific methods
@@ -96,19 +100,19 @@ func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*Twi
 	return twitterArgs, nil
 }
 
-func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (*LinkedInArguments, error) {
-	linkedInArgs := &LinkedInArguments{}
-	if err := unmarshalToStruct(args, linkedInArgs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal LinkedIn job arguments: %w", err)
-	}
+// func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (*LinkedInArguments, error) {
+// 	linkedInArgs := &LinkedInArguments{}
+// 	if err := unmarshalToStruct(args, linkedInArgs); err != nil {
+// 		return nil, fmt.Errorf("failed to unmarshal LinkedIn job arguments: %w", err)
+// 	}
 
-	// Perform job-type-specific validation for LinkedIn
-	if err := linkedInArgs.ValidateForJobType(jobType); err != nil {
-		return nil, fmt.Errorf("LinkedIn job validation failed: %w", err)
-	}
+// 	// Perform job-type-specific validation for LinkedIn
+// 	if err := linkedInArgs.ValidateForJobType(jobType); err != nil {
+// 		return nil, fmt.Errorf("LinkedIn job validation failed: %w", err)
+// 	}
 
-	return linkedInArgs, nil
-}
+// 	return linkedInArgs, nil
+// }
 
 // unmarshalToStruct converts a map[string]any to a struct using JSON marshal/unmarshal
 // This provides the same functionality as the existing JobArguments.Unmarshal methods

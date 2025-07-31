@@ -65,7 +65,7 @@ func (t *TikTokTranscriptionArguments) Validate() error {
 
 // GetCapability returns the capability for TikTok operations (always transcription)
 func (t *TikTokTranscriptionArguments) GetCapability() teetypes.Capability {
-	return teetypes.CapTiktokTranscription
+	return teetypes.CapTranscription
 }
 
 // IsTikTokURL validates if the URL is a TikTok URL
