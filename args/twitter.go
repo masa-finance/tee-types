@@ -62,7 +62,7 @@ func (t *TwitterSearchArguments) ValidateForJobType(jobType teetypes.JobType) er
 	}
 
 	// Validate QueryType against job-specific capabilities
-	return ValidateCapabilityForJobType(jobType, teetypes.Capability(t.QueryType))
+	return jobType.ValidateCapability(teetypes.Capability(t.QueryType))
 }
 
 // GetCapability returns the QueryType as a typed Capability

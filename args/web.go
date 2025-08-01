@@ -70,7 +70,7 @@ func (w *WebSearchArguments) ValidateForJobType(jobType teetypes.JobType) error 
 	}
 
 	// Validate capability against job-specific capabilities
-	return ValidateCapabilityForJobType(jobType, w.GetCapability())
+	return jobType.ValidateCapability(w.GetCapability())
 }
 
 // GetCapability returns the capability for web operations (always scraper)

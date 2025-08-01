@@ -1,5 +1,10 @@
 package types
 
+import (
+	"fmt"
+	"slices"
+)
+
 type JobType string
 type Capability string
 type WorkerCapabilities map[JobType][]Capability
@@ -7,6 +12,21 @@ type WorkerCapabilities map[JobType][]Capability
 // String returns the string representation of the JobType
 func (j JobType) String() string {
 	return string(j)
+}
+
+// ValidateCapability validates that a capability is supported for this job type
+func (j JobType) ValidateCapability(capability Capability) error {
+	validCaps, exists := JobCapabilityMap[j]
+	if !exists {
+		return fmt.Errorf("unknown job type: %s", j)
+	}
+
+	if !slices.Contains(validCaps, capability) {
+		return fmt.Errorf("capability '%s' is not valid for job type '%s'. Valid capabilities: %v",
+			capability, j, validCaps)
+	}
+
+	return nil
 }
 
 // combineCapabilities combines multiple capability slices and ensures uniqueness

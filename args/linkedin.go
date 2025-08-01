@@ -76,7 +76,7 @@ func (l *LinkedInArguments) ValidateForJobType(jobType teetypes.JobType) error {
 	}
 
 	// Validate QueryType against job-specific capabilities
-	return ValidateCapabilityForJobType(jobType, teetypes.Capability(l.QueryType))
+	return jobType.ValidateCapability(teetypes.Capability(l.QueryType))
 }
 
 // GetCapability returns the QueryType as a typed Capability

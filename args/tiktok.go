@@ -97,7 +97,7 @@ func (t *TikTokTranscriptionArguments) ValidateForJobType(jobType teetypes.JobTy
 	}
 
 	// Validate capability against job-specific capabilities
-	return ValidateCapabilityForJobType(jobType, t.GetCapability())
+	return jobType.ValidateCapability(t.GetCapability())
 }
 
 // validateLanguageCode validates the language code format
