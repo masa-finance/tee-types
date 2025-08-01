@@ -57,13 +57,14 @@ const (
 	CapGetFollowing        Capability = "getfollowing"
 	CapGetFollowers        Capability = "getfollowers"
 	CapGetSpace            Capability = "getspace"
+	CapEmpty               Capability = ""
 )
 
 // Capability group constants for easy reuse
 var (
-	AlwaysAvailableWebCaps       = []Capability{CapScraper}
-	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry}
-	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription}
+	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
+	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
+	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
@@ -78,13 +79,14 @@ var (
 		CapGetById, CapGetReplies, CapGetRetweeters, CapGetTweets, CapGetMedia,
 		CapGetHomeTweets, CapGetForYouTweets, CapGetProfileById,
 		CapGetTrends, CapGetFollowing, CapGetFollowers, CapGetSpace,
+		CapEmpty,
 	}
 
 	// TwitterAPICaps are basic Twitter capabilities available with API keys
-	TwitterAPICaps = []Capability{CapSearchByQuery, CapGetById, CapGetProfileById}
+	TwitterAPICaps = []Capability{CapSearchByQuery, CapGetById, CapGetProfileById, CapEmpty}
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
-	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing}
+	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing, CapEmpty}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
