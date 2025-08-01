@@ -3,8 +3,7 @@ package util
 import (
 	"iter"
 	"maps"
-
-	xmaps "golang.org/x/exp/maps"
+	"slices"
 )
 
 type Set[T comparable] map[T]struct{}
@@ -37,7 +36,7 @@ func (s *Set[T]) Delete(items ...T) {
 }
 
 func (s *Set[T]) Items() []T {
-	return xmaps.Keys(*s)
+	return slices.Collect(s.ItemsSeq())
 }
 
 func (s *Set[T]) ItemsSeq() iter.Seq[T] {
