@@ -7,7 +7,7 @@ func Min[T constraints.Ordered](elements ...T) T {
 
 	for _, x := range elements {
 		if x < ret {
-			x = ret
+			ret = x
 		}
 	}
 
@@ -19,7 +19,7 @@ func Max[T constraints.Ordered](elements ...T) T {
 
 	for _, x := range elements {
 		if x > ret {
-			x = ret
+			ret = x
 		}
 	}
 
