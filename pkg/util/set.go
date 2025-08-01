@@ -8,14 +8,14 @@ import (
 
 type Set[T comparable] map[T]struct{}
 
-func NewSet[T comparable](capacity uint, items ...T) Set[T] {
+func NewSet[T comparable](capacity uint, items ...T) *Set[T] {
 	capacity = Max(capacity, uint(len(items)))
 
 	ret := make(Set[T], capacity)
 	for _, x := range items {
 		ret.Add(x)
 	}
-	return ret
+	return &ret
 }
 
 func (s *Set[T]) Contains(item T) bool {
@@ -35,6 +35,10 @@ func (s *Set[T]) Delete(items ...T) {
 	}
 }
 
+func (s *Set[T]) Length() int {
+	return len(*s)
+}
+
 func (s *Set[T]) Items() []T {
 	return slices.Collect(s.ItemsSeq())
 }
@@ -43,13 +47,20 @@ func (s *Set[T]) ItemsSeq() iter.Seq[T] {
 	return maps.Keys(*s)
 }
 
-func (s *Set[T]) Union(s2 *Set[T]) *Set[T] {
-	ret := make(Set[T], len(*s)+len(*s2))
+func (s *Set[T]) Union(sets ...*Set[T]) *Set[T] {
+	sum := len(*s)
+	for _, ss := range sets {
+		sum = sum + len(*ss)
+
+	}
+	ret := make(Set[T], sum)
 	for k := range *s {
 		ret.Add(k)
 	}
-	for k := range *s2 {
-		ret.Add(k)
+	for _, ss := range sets {
+		for k := range *ss {
+			ret.Add(k)
+		}
 	}
 	return &ret
 }
