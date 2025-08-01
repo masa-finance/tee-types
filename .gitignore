@@ -1,0 +1,12 @@
+*.out
+*.log
+
+go.work
+
+# Backup and IDE-related files
+.idea/**
+.vscode/**
+*~
+*.log
+.DS_Store
+.aider*
