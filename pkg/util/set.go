@@ -55,7 +55,7 @@ func (s *Set[T]) Union(s2 *Set[T]) *Set[T] {
 }
 
 func (s *Set[T]) Intersection(s2 *Set[T]) *Set[T] {
-	ret := make(Set[T], len(*s)+len(*s2))
+	ret := make(Set[T], Min(len(*s), len(*s2)))
 	for k := range *s {
 		if s2.Contains(k) {
 			ret.Add(k)
@@ -65,7 +65,7 @@ func (s *Set[T]) Intersection(s2 *Set[T]) *Set[T] {
 }
 
 func (s *Set[T]) Difference(s2 *Set[T]) *Set[T] {
-	ret := make(Set[T], len(*s)+len(*s2))
+	ret := make(Set[T], len(*s))
 	for k := range *s {
 		if !s2.Contains(k) {
 			ret.Add(k)
