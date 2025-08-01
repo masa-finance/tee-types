@@ -28,11 +28,6 @@ func (t *TikTokTranscriptionArguments) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
 	}
 
-	// // Normalize language to lowercase if provided
-	// if t.Language != "" {
-	// 	t.Language = strings.ToLower(t.Language)
-	// }
-
 	return t.Validate()
 }
 
@@ -71,10 +66,7 @@ func (t *TikTokTranscriptionArguments) GetCapability() teetypes.Capability {
 // IsTikTokURL validates if the URL is a TikTok URL
 func (t *TikTokTranscriptionArguments) IsTikTokURL(parsedURL *url.URL) bool {
 	host := strings.ToLower(parsedURL.Host)
-	return host == "tiktok.com" ||
-		host == "www.tiktok.com" ||
-		host == "vm.tiktok.com" ||
-		strings.HasSuffix(host, ".tiktok.com")
+	return host == "tiktok.com" || strings.HasSuffix(host, ".tiktok.com")
 }
 
 // HasLanguagePreference returns true if a language preference is specified
