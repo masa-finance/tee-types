@@ -7,15 +7,15 @@ import (
 	"github.com/masa-finance/tee-types/types"
 )
 
-// JobArgumentsInterface defines the interface that all job arguments must implement
-type JobArgumentsInterface interface {
+// JobArguments defines the interface that all job arguments must implement
+type JobArguments interface {
 	Validate() error
 	GetCapability() types.Capability
 }
 
-// TwitterJobArgumentsInterface extends JobArgumentsInterface for Twitter-specific methods
-type TwitterJobArgumentsInterface interface {
-	JobArgumentsInterface
+// TwitterJobArguments extends JobArguments for Twitter-specific methods
+type TwitterJobArguments interface {
+	JobArguments
 	ValidateForJobType(jobType types.JobType) error
 	IsSingleTweetOperation() bool
 	IsMultipleTweetOperation() bool
@@ -25,32 +25,32 @@ type TwitterJobArgumentsInterface interface {
 	IsTrendsOperation() bool
 }
 
-// WebJobArgumentsInterface extends JobArgumentsInterface for Web-specific methods
-type WebJobArgumentsInterface interface {
-	JobArgumentsInterface
+// WebJobArguments extends JobArguments for Web-specific methods
+type WebJobArguments interface {
+	JobArguments
 	ValidateForJobType(jobType types.JobType) error
 	IsDeepScrape() bool
 	HasSelector() bool
 	GetEffectiveMaxDepth() int
 }
 
-// TikTokJobArgumentsInterface extends JobArgumentsInterface for TikTok-specific methods
-type TikTokJobArgumentsInterface interface {
-	JobArgumentsInterface
+// TikTokJobArguments extends JobArguments for TikTok-specific methods
+type TikTokJobArguments interface {
+	JobArguments
 	ValidateForJobType(jobType types.JobType) error
 	HasLanguagePreference() bool
 	GetLanguageCode() string
 }
 
-// LinkedInJobArgumentsInterface extends JobArgumentsInterface for LinkedIn-specific methods
-type LinkedInJobArgumentsInterface interface {
-	JobArgumentsInterface
+// LinkedInJobArguments extends JobArguments for LinkedIn-specific methods
+type LinkedInJobArguments interface {
+	JobArguments
 	ValidateForJobType(jobType types.JobType) error
 }
 
 // UnmarshalJobArguments unmarshals job arguments from a generic map into the appropriate typed struct
 // This works with both tee-indexer and tee-worker JobArguments types
-func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgumentsInterface, error) {
+func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArguments, error) {
 	switch jobType {
 	case types.WebJob:
 		return unmarshalWebArguments(args)
@@ -135,7 +135,7 @@ func (t *TelemetryJobArguments) GetCapability() types.Capability {
 }
 
 // Type assertion helpers
-func AsWebArguments(args JobArgumentsInterface) (WebJobArgumentsInterface, bool) {
+func AsWebArguments(args JobArguments) (WebJobArguments, bool) {
 	webArgs, ok := args.(*WebSearchArguments)
 	if !ok {
 		return nil, false
@@ -143,7 +143,7 @@ func AsWebArguments(args JobArgumentsInterface) (WebJobArgumentsInterface, bool)
 	return webArgs, true
 }
 
-func AsTwitterArguments(args JobArgumentsInterface) (TwitterJobArgumentsInterface, bool) {
+func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
 	twitterArgs, ok := args.(*TwitterSearchArguments)
 	if !ok {
 		return nil, false
@@ -151,7 +151,7 @@ func AsTwitterArguments(args JobArgumentsInterface) (TwitterJobArgumentsInterfac
 	return twitterArgs, true
 }
 
-func AsTikTokArguments(args JobArgumentsInterface) (TikTokJobArgumentsInterface, bool) {
+func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) {
 	tiktokArgs, ok := args.(*TikTokTranscriptionArguments)
 	if !ok {
 		return nil, false
@@ -159,12 +159,12 @@ func AsTikTokArguments(args JobArgumentsInterface) (TikTokJobArgumentsInterface,
 	return tiktokArgs, true
 }
 
-func AsTelemetryArguments(args JobArgumentsInterface) (*TelemetryJobArguments, bool) {
+func AsTelemetryArguments(args JobArguments) (*TelemetryJobArguments, bool) {
 	telemetryArgs, ok := args.(*TelemetryJobArguments)
 	return telemetryArgs, ok
 }
 
-func AsLinkedInArguments(args JobArgumentsInterface) (LinkedInJobArgumentsInterface, bool) {
+func AsLinkedInArguments(args JobArguments) (LinkedInJobArguments, bool) {
 	linkedInArgs, ok := args.(*LinkedInArguments)
 	if !ok {
 		return nil, false
