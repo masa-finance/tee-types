@@ -33,9 +33,7 @@ func (t *TwitterSearchArguments) UnmarshalJSON(data []byte) error {
 	}
 
 	// Normalize QueryType to lowercase
-	if t.QueryType != "" {
-		t.QueryType = strings.ToLower(t.QueryType)
-	}
+	t.QueryType = strings.ToLower(t.QueryType)
 
 	return t.Validate()
 }
