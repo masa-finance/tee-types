@@ -101,7 +101,7 @@ func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*Twi
 
 	// Perform job-type-specific validation for Twitter
 	if err := twitterArgs.ValidateForJobType(jobType); err != nil {
-		return nil, fmt.Errorf("Twitter job validation failed: %w", err)
+		return nil, fmt.Errorf("twitter job validation failed: %w", err)
 	}
 
 	return twitterArgs, nil
