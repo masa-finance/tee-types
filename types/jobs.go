@@ -3,6 +3,8 @@ package types
 import (
 	"fmt"
 	"slices"
+
+	"golang.org/x/exp/maps"
 )
 
 type JobType string
@@ -31,19 +33,15 @@ func (j JobType) ValidateCapability(capability Capability) error {
 
 // combineCapabilities combines multiple capability slices and ensures uniqueness
 func combineCapabilities(capSlices ...[]Capability) []Capability {
-	seen := make(map[Capability]bool)
-	var result []Capability
+	capMap := make(map[Capability]struct{})
 
 	for _, capSlice := range capSlices {
 		for _, cap := range capSlice {
-			if !seen[cap] {
-				seen[cap] = true
-				result = append(result, cap)
-			}
+			capMap[cap] = struct{}{}
 		}
 	}
 
-	return result
+	return maps.Keys(capMap)
 }
 
 // Job type constants - centralized from tee-indexer and tee-worker
