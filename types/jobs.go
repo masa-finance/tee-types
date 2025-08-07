@@ -88,7 +88,6 @@ var (
 		WebJob:       AlwaysAvailableWebCaps,
 		TelemetryJob: AlwaysAvailableTelemetryCaps,
 		TiktokJob:    AlwaysAvailableTiktokCaps,
-		// LinkedInJob:  AlwaysAvailableLinkedInCaps,
 	}
 
 	// TwitterCredentialCaps are all Twitter capabilities available with credential-based auth
@@ -123,9 +122,6 @@ var JobCapabilityMap = map[JobType][]Capability{
 	),
 	TwitterApifyJob: TwitterApifyCaps,
 
-	// LinkedIn job capabilities
-	// LinkedInJob: AlwaysAvailableLinkedInCaps,
-
 	// Web job capabilities
 	WebJob: AlwaysAvailableWebCaps,
 
@@ -142,8 +138,7 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterCredentialJob: CapSearchByQuery,
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
-	// LinkedInJob:          CapSearchByQuery,
-	WebJob:       CapScraper,
-	TiktokJob:    CapTranscription,
-	TelemetryJob: CapTelemetry,
+	WebJob:               CapScraper,
+	TiktokJob:            CapTranscription,
+	TelemetryJob:         CapTelemetry,
 }
