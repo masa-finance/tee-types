@@ -34,7 +34,7 @@ func (t *TikTokTranscriptionArguments) UnmarshalJSON(data []byte) error {
 // Validate validates the TikTok arguments
 func (t *TikTokTranscriptionArguments) Validate() error {
 	if t.VideoURL == "" {
-		return fmt.Errorf("video_url is required")
+		return errors.New("video_url is required")
 	}
 
 	// Validate URL format
