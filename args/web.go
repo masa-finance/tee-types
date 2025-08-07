@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"net/url"
 
-	teetypes "github.com/masa-finance/tee-types/types"
 	"github.com/masa-finance/tee-types/pkg/util"
+	teetypes "github.com/masa-finance/tee-types/types"
 )
 
 type WebSearchArguments struct {
