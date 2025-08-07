@@ -6,6 +6,7 @@ import (
 	"net/url"
 
 	teetypes "github.com/masa-finance/tee-types/types"
+	"github.com/masa-finance/tee-types/pkg/util"
 )
 
 type WebSearchArguments struct {
@@ -90,8 +91,5 @@ func (w *WebSearchArguments) HasSelector() bool {
 
 // GetEffectiveMaxDepth returns the effective maximum depth for scraping
 func (w *WebSearchArguments) GetEffectiveMaxDepth() int {
-	if w.MaxDepth <= 0 {
-		return 1 // Default to single page
-	}
-	return w.MaxDepth
+	return util.Max(w.MaxDepth, 1)
 }

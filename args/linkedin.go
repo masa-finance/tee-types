@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/masa-finance/tee-types/pkg/util"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
@@ -87,10 +88,7 @@ func (l *LinkedInArguments) HasNetworkFilters() bool {
 
 // GetEffectiveMaxResults returns the effective maximum results, defaulting to a reasonable limit
 func (l *LinkedInArguments) GetEffectiveMaxResults() int {
-	if l.MaxResults <= 0 {
-		return 10 // Default to 10 results
-	}
-	return l.MaxResults
+	return util.Max(l.MaxResults, 10)
 }
 
 // LinkedInSearchArguments is an alias for LinkedInArguments for backward compatibility.
