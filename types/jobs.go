@@ -49,7 +49,7 @@ const (
 	TwitterCredentialJob JobType = "twitter-credential" // Twitter scraping with credentials
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
-	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping and profile operations
+	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping, keeping for unmarshalling logic
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -88,7 +88,7 @@ var (
 		WebJob:       AlwaysAvailableWebCaps,
 		TelemetryJob: AlwaysAvailableTelemetryCaps,
 		TiktokJob:    AlwaysAvailableTiktokCaps,
-		LinkedInJob:  AlwaysAvailableLinkedInCaps,
+		// LinkedInJob:  AlwaysAvailableLinkedInCaps,
 	}
 
 	// TwitterCredentialCaps are all Twitter capabilities available with credential-based auth
@@ -124,7 +124,7 @@ var JobCapabilityMap = map[JobType][]Capability{
 	TwitterApifyJob: TwitterApifyCaps,
 
 	// LinkedIn job capabilities
-	LinkedInJob: AlwaysAvailableLinkedInCaps,
+	// LinkedInJob: AlwaysAvailableLinkedInCaps,
 
 	// Web job capabilities
 	WebJob: AlwaysAvailableWebCaps,
@@ -142,8 +142,8 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterCredentialJob: CapSearchByQuery,
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
-	LinkedInJob:          CapSearchByQuery,
-	WebJob:               CapScraper,
-	TiktokJob:            CapTranscription,
-	TelemetryJob:         CapTelemetry,
+	// LinkedInJob:          CapSearchByQuery,
+	WebJob:       CapScraper,
+	TiktokJob:    CapTranscription,
+	TelemetryJob: CapTelemetry,
 }
