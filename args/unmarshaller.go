@@ -61,6 +61,9 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 	case types.TwitterJob, types.TwitterCredentialJob, types.TwitterApiJob, types.TwitterApifyJob:
 		return unmarshalTwitterArguments(jobType, args)
 
+	case types.LinkedInJob:
+		return unmarshalLinkedInArguments(jobType, args)
+
 	case types.TelemetryJob:
 		return &TelemetryJobArguments{}, nil
 
@@ -105,6 +108,27 @@ func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*Twi
 	}
 
 	return twitterArgs, nil
+}
+
+func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (*LinkedInArguments, error) {
+	linkedInArgs := &LinkedInArguments{}
+	if err := unmarshalToStruct(args, linkedInArgs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal LinkedIn job arguments: %w", err)
+	}
+
+	// If no QueryType is specified, use the default capability for this job type
+	if linkedInArgs.QueryType == "" {
+		if defaultCap, exists := types.JobDefaultCapabilityMap[jobType]; exists {
+			linkedInArgs.QueryType = string(defaultCap)
+		}
+	}
+
+	// Perform job-type-specific validation for LinkedIn
+	if err := linkedInArgs.ValidateForJobType(jobType); err != nil {
+		return nil, fmt.Errorf("linkedin job validation failed: %w", err)
+	}
+
+	return linkedInArgs, nil
 }
 
 // unmarshalToStruct converts a map[string]any to a struct using JSON marshal/unmarshal

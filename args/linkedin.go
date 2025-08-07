@@ -32,31 +32,15 @@ func (l *LinkedInArguments) UnmarshalJSON(data []byte) error {
 	}
 
 	// Normalize QueryType to lowercase
-	if l.QueryType != "" {
-		l.QueryType = strings.ToLower(l.QueryType)
-	}
+	l.QueryType = strings.ToLower(l.QueryType)
 
 	return l.Validate()
 }
 
-// Validate validates the LinkedIn arguments
+// Validate validates the LinkedIn arguments (general validation)
 func (l *LinkedInArguments) Validate() error {
-	if l.QueryType == "" {
-		return fmt.Errorf("type is required")
-	}
-
-	// Validate query type
-	validTypes := map[string]bool{
-		"searchbyquery": true,
-		"getprofile":    true,
-	}
-	if !validTypes[l.QueryType] {
-		return fmt.Errorf("invalid type: %s, must be one of: searchbyquery, getprofile", l.QueryType)
-	}
-
-	if l.Query == "" {
-		return fmt.Errorf("query is required")
-	}
+	// Note: QueryType is not required for all capabilities, similar to Twitter pattern
+	// Query is also not required for all capabilities
 
 	if l.MaxResults < 0 {
 		return fmt.Errorf("max_results must be non-negative, got: %d", l.MaxResults)
@@ -82,6 +66,31 @@ func (l *LinkedInArguments) ValidateForJobType(jobType teetypes.JobType) error {
 // GetCapability returns the QueryType as a typed Capability
 func (l *LinkedInArguments) GetCapability() teetypes.Capability {
 	return teetypes.Capability(l.QueryType)
+}
+
+// IsSearchOperation returns true if this is a search operation
+func (l *LinkedInArguments) IsSearchOperation() bool {
+	capability := l.GetCapability()
+	return capability == teetypes.CapSearchByQuery
+}
+
+// IsProfileOperation returns true if this is a profile operation
+func (l *LinkedInArguments) IsProfileOperation() bool {
+	capability := l.GetCapability()
+	return capability == teetypes.CapGetProfile
+}
+
+// HasNetworkFilters returns true if network filters are specified
+func (l *LinkedInArguments) HasNetworkFilters() bool {
+	return len(l.NetworkFilters) > 0
+}
+
+// GetEffectiveMaxResults returns the effective maximum results, defaulting to a reasonable limit
+func (l *LinkedInArguments) GetEffectiveMaxResults() int {
+	if l.MaxResults <= 0 {
+		return 10 // Default to 10 results
+	}
+	return l.MaxResults
 }
 
 // LinkedInSearchArguments is an alias for LinkedInArguments for backward compatibility.

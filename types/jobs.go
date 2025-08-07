@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"slices"
 
-	"golang.org/x/exp/maps"
+	"github.com/masa-finance/tee-types/pkg/util"
 )
 
 type JobType string
@@ -33,15 +33,11 @@ func (j JobType) ValidateCapability(capability Capability) error {
 
 // combineCapabilities combines multiple capability slices and ensures uniqueness
 func combineCapabilities(capSlices ...[]Capability) []Capability {
-	capMap := make(map[Capability]struct{})
-
+	caps := util.NewSet[Capability]()
 	for _, capSlice := range capSlices {
-		for _, cap := range capSlice {
-			capMap[cap] = struct{}{}
-		}
+		caps.Add(capSlice...)
 	}
-
-	return maps.Keys(capMap)
+	return caps.Items()
 }
 
 // Job type constants - centralized from tee-indexer and tee-worker
@@ -53,6 +49,7 @@ const (
 	TwitterCredentialJob JobType = "twitter-credential" // Twitter scraping with credentials
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
+	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping and profile operations
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -75,6 +72,7 @@ const (
 	CapGetFollowing        Capability = "getfollowing"
 	CapGetFollowers        Capability = "getfollowers"
 	CapGetSpace            Capability = "getspace"
+	CapGetProfile          Capability = "getprofile" // LinkedIn get profile capability
 	CapEmpty               Capability = ""
 )
 
@@ -83,12 +81,14 @@ var (
 	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
 	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapEmpty}
+	AlwaysAvailableLinkedInCaps  = []Capability{CapSearchByQuery, CapGetProfile, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
 		WebJob:       AlwaysAvailableWebCaps,
 		TelemetryJob: AlwaysAvailableTelemetryCaps,
 		TiktokJob:    AlwaysAvailableTiktokCaps,
+		LinkedInJob:  AlwaysAvailableLinkedInCaps,
 	}
 
 	// TwitterCredentialCaps are all Twitter capabilities available with credential-based auth
@@ -123,6 +123,9 @@ var JobCapabilityMap = map[JobType][]Capability{
 	),
 	TwitterApifyJob: TwitterApifyCaps,
 
+	// LinkedIn job capabilities
+	LinkedInJob: AlwaysAvailableLinkedInCaps,
+
 	// Web job capabilities
 	WebJob: AlwaysAvailableWebCaps,
 
@@ -139,6 +142,7 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterCredentialJob: CapSearchByQuery,
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
+	LinkedInJob:          CapSearchByQuery,
 	WebJob:               CapScraper,
 	TiktokJob:            CapTranscription,
 	TelemetryJob:         CapTelemetry,
