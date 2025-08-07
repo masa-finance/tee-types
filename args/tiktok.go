@@ -45,7 +45,7 @@ func (t *TikTokTranscriptionArguments) Validate() error {
 
 	// Basic TikTok URL validation
 	if !t.IsTikTokURL(parsedURL) {
-		return fmt.Errorf("URL must be a valid TikTok video URL")
+		return errors.New("URL must be a valid TikTok video URL")
 	}
 
 	// Validate language format if provided
