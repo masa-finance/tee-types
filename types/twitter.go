@@ -138,9 +138,17 @@ type ProfileResultApify struct {
 }
 
 type ProfileEntities struct {
-	Description DescriptionEntities `json:"description"`
+	URL         *URLEntities `json:"url,omitempty"`
+	Description *URLEntities `json:"description,omitempty"`
 }
 
-type DescriptionEntities struct {
-	URLs []any `json:"urls"`
+type URLEntities struct {
+	URLs []URLEntity `json:"urls,omitempty"`
+}
+
+type URLEntity struct {
+	URL         string `json:"url"`
+	ExpandedURL string `json:"expanded_url"`
+	DisplayURL  string `json:"display_url"`
+	Indices     []int  `json:"indices"`
 }

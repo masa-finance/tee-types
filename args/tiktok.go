@@ -41,7 +41,7 @@ func (t *TikTokTranscriptionArguments) Validate() error {
 	// Validate URL format
 	parsedURL, err := url.Parse(t.VideoURL)
 	if err != nil {
-		return errors.New("invalid video_url format")
+		return fmt.Errorf("invalid video_url format: %w", err)
 	}
 
 	// Basic TikTok URL validation
