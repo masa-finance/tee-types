@@ -39,6 +39,7 @@ type TikTokJobArguments interface {
 	JobArguments
 	ValidateForJobType(jobType types.JobType) error
 	HasLanguagePreference() bool
+	GetVideoURL() string
 	GetLanguageCode() string
 }
 

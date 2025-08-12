@@ -75,6 +75,11 @@ func (t *TikTokTranscriptionArguments) HasLanguagePreference() bool {
 	return t.Language != ""
 }
 
+// GetVideoURL returns the source video URL
+func (t *TikTokTranscriptionArguments) GetVideoURL() string {
+	return t.VideoURL
+}
+
 // GetLanguageCode returns the language code, defaulting to "en-us" if not specified
 func (t *TikTokTranscriptionArguments) GetLanguageCode() string {
 	if t.Language == "" {
