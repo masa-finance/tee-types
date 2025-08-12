@@ -160,12 +160,9 @@ func (t *TelemetryJobArguments) GetCapability() types.Capability {
 }
 
 // Type assertion helpers
-func AsWebArguments(args JobArguments) (WebJobArguments, bool) {
+func AsWebArguments(args JobArguments) (*WebSearchArguments, bool) {
 	webArgs, ok := args.(*WebSearchArguments)
-	if !ok {
-		return nil, false
-	}
-	return webArgs, true
+	return webArgs, ok
 }
 
 func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
