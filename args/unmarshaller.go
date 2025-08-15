@@ -84,41 +84,51 @@ func unmarshalWebArguments(args map[string]any) (*WebSearchArguments, error) {
 }
 
 func unmarshalTikTokArguments(args map[string]any) (JobArguments, error) {
-	if v, ok := args["type"]; ok {
-		if s, ok := v.(string); ok {
-			capability := types.Capability(strings.ToLower(s))
-			if capability == types.CapSearchByQuery {
-				searchArgs := &TikTokSearchByQueryArguments{}
-				if err := unmarshalToStruct(args, searchArgs); err != nil {
-					return nil, fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
-				}
-				if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
-					return nil, fmt.Errorf("tiktok job validation failed: %w", err)
-				}
-				return searchArgs, nil
-			}
-			if capability == types.CapSearchByTrending {
-				searchArgs := &TikTokSearchByTrendingArguments{}
-				if err := unmarshalToStruct(args, searchArgs); err != nil {
-					return nil, fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
-				}
-				if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
-					return nil, fmt.Errorf("tiktok job validation failed: %w", err)
-				}
-				return searchArgs, nil
-			}
+	// Unmarshal minimally to read QueryType like we do for Twitter
+	minimal := &TikTokArguments{}
+	if err := unmarshalToStruct(args, minimal); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
+	}
+	capability := types.Capability(strings.ToLower(minimal.QueryType))
+	if capability == types.Capability("") {
+		defaultCap, exists := types.JobDefaultCapabilityMap[types.TiktokJob]
+		if !exists {
+			return nil, fmt.Errorf("no default capability configured for job type: %s", types.TiktokJob)
 		}
+		capability = defaultCap
 	}
 
-	// Default to transcription args
-	transcriptionArgs := &TikTokTranscriptionArguments{}
-	if err := unmarshalToStruct(args, transcriptionArgs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal TikTok transcription arguments: %w", err)
+	switch capability {
+	case types.CapSearchByQuery:
+		searchArgs := &TikTokSearchByQueryArguments{}
+		if err := unmarshalToStruct(args, searchArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
+		}
+		if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return searchArgs, nil
+	case types.CapSearchByTrending:
+		searchArgs := &TikTokSearchByTrendingArguments{}
+		if err := unmarshalToStruct(args, searchArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
+		}
+		if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return searchArgs, nil
+	case types.CapTranscription:
+		transcriptionArgs := &TikTokTranscriptionArguments{}
+		if err := unmarshalToStruct(args, transcriptionArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok transcription arguments: %w", err)
+		}
+		if err := transcriptionArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return transcriptionArgs, nil
+	default:
+		return nil, fmt.Errorf("unknown tiktok type: %s", capability)
 	}
-	if err := transcriptionArgs.ValidateForJobType(types.TiktokJob); err != nil {
-		return nil, fmt.Errorf("tiktok job validation failed: %w", err)
-	}
-	return transcriptionArgs, nil
 }
 
 func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*TwitterSearchArguments, error) {
@@ -204,13 +214,10 @@ func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
 	return twitterArgs, true
 }
 
-func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) { // Backward compat helper for transcription
-	tiktokArgs, ok := args.(*TikTokTranscriptionArguments)
-	if !ok {
-		return nil, false
-	}
-	return tiktokArgs, true
-}
+// Use specific helpers for TikTok argument types:
+// - AsTikTokTranscriptionArguments
+// - AsTikTokSearchByQueryArguments
+// - AsTikTokSearchByTrendingArguments
 
 func AsTikTokTranscriptionArguments(args JobArguments) (*TikTokTranscriptionArguments, bool) {
 	v, ok := args.(*TikTokTranscriptionArguments)
