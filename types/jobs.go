@@ -58,6 +58,7 @@ const (
 	CapTelemetry           Capability = "telemetry"
 	CapTranscription       Capability = "transcription"
 	CapSearchByQuery       Capability = "searchbyquery"
+	CapSearchByTrending    Capability = "searchbytrending"
 	CapSearchByFullArchive Capability = "searchbyfullarchive"
 	CapSearchByProfile     Capability = "searchbyprofile"
 	CapGetById             Capability = "getbyid"
@@ -104,6 +105,9 @@ var (
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing, CapEmpty}
+
+	// TiktokSearchCaps are Tiktok capabilities available with Apify
+	TiktokSearchCaps = []Capability{CapSearchByQuery, CapSearchByTrending}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
@@ -126,7 +130,10 @@ var JobCapabilityMap = map[JobType][]Capability{
 	WebJob: AlwaysAvailableWebCaps,
 
 	// TikTok job capabilities
-	TiktokJob: AlwaysAvailableTiktokCaps,
+	TiktokJob: combineCapabilities(
+		AlwaysAvailableTiktokCaps,
+		TiktokSearchCaps,
+	),
 
 	// Telemetry job capabilities
 	TelemetryJob: AlwaysAvailableTelemetryCaps,
@@ -139,6 +146,6 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
 	WebJob:               CapScraper,
-	TiktokJob:            CapTranscription,
+	TiktokJob:            CapSearchByQuery,
 	TelemetryJob:         CapTelemetry,
 }
