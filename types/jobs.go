@@ -81,7 +81,7 @@ const (
 var (
 	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
-	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapSearchByQuery, CapSearchByTrending, CapEmpty}
+	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapEmpty}
 	AlwaysAvailableLinkedInCaps  = []Capability{CapSearchByQuery, CapGetProfile, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
@@ -105,6 +105,9 @@ var (
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing, CapEmpty}
+
+	// TiktokSearchCaps are Tiktok capabilities available with Apify
+	TiktokSearchCaps = []Capability{CapSearchByQuery, CapSearchByTrending}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
@@ -127,7 +130,10 @@ var JobCapabilityMap = map[JobType][]Capability{
 	WebJob: AlwaysAvailableWebCaps,
 
 	// TikTok job capabilities
-	TiktokJob: AlwaysAvailableTiktokCaps,
+	TiktokJob: combineCapabilities(
+		AlwaysAvailableTiktokCaps,
+		TiktokSearchCaps,
+	),
 
 	// Telemetry job capabilities
 	TelemetryJob: AlwaysAvailableTelemetryCaps,
