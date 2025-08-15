@@ -113,3 +113,119 @@ func (t *TikTokTranscriptionArguments) validateLanguageCode() error {
 
 	return nil
 }
+
+// Proxy settings used by Apify input
+type TikTokApifyProxySetting struct {
+	UseApifyProxy bool `json:"use_apify_proxy"`
+}
+
+// TikTokSearchByQueryArguments defines args for epctex/tiktok-search-scraper
+type TikTokSearchByQueryArguments struct {
+	QueryType string `json:"type"`
+
+	Search    []string                 `json:"search,omitempty"`
+	StartUrls []string                 `json:"start_urls,omitempty"`
+	MaxItems  int                      `json:"max_items,omitempty"`
+	EndPage   int                      `json:"end_page,omitempty"`
+	Proxy     *TikTokApifyProxySetting `json:"proxy,omitempty"`
+}
+
+func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
+	type Alias TikTokSearchByQueryArguments
+	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
+	}
+	t.QueryType = strings.ToLower(t.QueryType)
+	if t.Proxy == nil {
+		t.Proxy = &TikTokApifyProxySetting{UseApifyProxy: true}
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByQueryArguments) Validate() error {
+	if len(t.Search) == 0 && len(t.StartUrls) == 0 {
+		return errors.New("either 'search' or 'start_urls' is required for searchbyquery")
+	}
+	if t.MaxItems < 0 {
+		return fmt.Errorf("max_items must be non-negative, got: %d", t.MaxItems)
+	}
+	if t.EndPage < 0 {
+		return fmt.Errorf("end_page must be non-negative, got: %d", t.EndPage)
+	}
+	return nil
+}
+
+func (t *TikTokSearchByQueryArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := jobType.ValidateCapability(teetypes.CapSearchByQuery); err != nil {
+		return err
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByQueryArguments) GetCapability() teetypes.Capability {
+	return teetypes.CapSearchByQuery
+}
+
+// TikTokSearchByTrendingArguments defines args for lexis-solutions/tiktok-trending-videos-scraper
+type TikTokSearchByTrendingArguments struct {
+	QueryType   string `json:"type"`
+	CountryCode string `json:"country_code,omitempty"`
+	SortBy      string `json:"sort_by,omitempty"`
+	MaxItems    int    `json:"max_items,omitempty"`
+	Period      string `json:"period,omitempty"` // "7" or "30"
+}
+
+func (t *TikTokSearchByTrendingArguments) UnmarshalJSON(data []byte) error {
+	type Alias TikTokSearchByTrendingArguments
+	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
+	}
+	t.QueryType = strings.ToLower(t.QueryType)
+	if t.CountryCode == "" {
+		t.CountryCode = "US"
+	}
+	if t.SortBy == "" {
+		t.SortBy = "vv"
+	}
+	if t.Period == "" {
+		t.Period = "7"
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByTrendingArguments) Validate() error {
+	allowedCountries := map[string]struct{}{
+		"AU": {}, "BR": {}, "CA": {}, "EG": {}, "FR": {}, "DE": {}, "ID": {}, "IL": {}, "IT": {}, "JP": {},
+		"MY": {}, "PH": {}, "RU": {}, "SA": {}, "SG": {}, "KR": {}, "ES": {}, "TW": {}, "TH": {}, "TR": {},
+		"AE": {}, "GB": {}, "US": {}, "VN": {},
+	}
+	if _, ok := allowedCountries[strings.ToUpper(t.CountryCode)]; !ok {
+		return fmt.Errorf("invalid country_code '%s'", t.CountryCode)
+	}
+	allowedSorts := map[string]struct{}{
+		"vv": {}, "like": {}, "comment": {}, "repost": {},
+	}
+	if _, ok := allowedSorts[strings.ToLower(t.SortBy)]; !ok {
+		return fmt.Errorf("invalid sort_by '%s'", t.SortBy)
+	}
+	if t.Period != "7" && t.Period != "30" {
+		return fmt.Errorf("invalid period '%s' (allowed: '7','30')", t.Period)
+	}
+	if t.MaxItems < 0 {
+		return fmt.Errorf("max_items must be non-negative, got: %d", t.MaxItems)
+	}
+	return nil
+}
+
+func (t *TikTokSearchByTrendingArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := jobType.ValidateCapability(teetypes.CapSearchByTrending); err != nil {
+		return err
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByTrendingArguments) GetCapability() teetypes.Capability {
+	return teetypes.CapSearchByTrending
+}

@@ -3,6 +3,7 @@ package args
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/masa-finance/tee-types/types"
 )
@@ -82,12 +83,42 @@ func unmarshalWebArguments(args map[string]any) (*WebSearchArguments, error) {
 	return webArgs, nil
 }
 
-func unmarshalTikTokArguments(args map[string]any) (*TikTokTranscriptionArguments, error) {
-	tiktokArgs := &TikTokTranscriptionArguments{}
-	if err := unmarshalToStruct(args, tiktokArgs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal TikTok job arguments: %w", err)
+func unmarshalTikTokArguments(args map[string]any) (JobArguments, error) {
+	if v, ok := args["type"]; ok {
+		if s, ok := v.(string); ok {
+			capability := types.Capability(strings.ToLower(s))
+			if capability == types.CapSearchByQuery {
+				searchArgs := &TikTokSearchByQueryArguments{}
+				if err := unmarshalToStruct(args, searchArgs); err != nil {
+					return nil, fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
+				}
+				if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+					return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+				}
+				return searchArgs, nil
+			}
+			if capability == types.CapSearchByTrending {
+				searchArgs := &TikTokSearchByTrendingArguments{}
+				if err := unmarshalToStruct(args, searchArgs); err != nil {
+					return nil, fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
+				}
+				if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+					return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+				}
+				return searchArgs, nil
+			}
+		}
 	}
-	return tiktokArgs, nil
+
+	// Default to transcription args
+	transcriptionArgs := &TikTokTranscriptionArguments{}
+	if err := unmarshalToStruct(args, transcriptionArgs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal TikTok transcription arguments: %w", err)
+	}
+	if err := transcriptionArgs.ValidateForJobType(types.TiktokJob); err != nil {
+		return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+	}
+	return transcriptionArgs, nil
 }
 
 func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*TwitterSearchArguments, error) {
@@ -173,7 +204,7 @@ func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
 	return twitterArgs, true
 }
 
-func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) {
+func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) { // Backward compat helper for transcription
 	tiktokArgs, ok := args.(*TikTokTranscriptionArguments)
 	if !ok {
 		return nil, false
@@ -181,15 +212,17 @@ func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) {
 	return tiktokArgs, true
 }
 
-func AsTelemetryArguments(args JobArguments) (*TelemetryJobArguments, bool) {
-	telemetryArgs, ok := args.(*TelemetryJobArguments)
-	return telemetryArgs, ok
+func AsTikTokTranscriptionArguments(args JobArguments) (*TikTokTranscriptionArguments, bool) {
+	v, ok := args.(*TikTokTranscriptionArguments)
+	return v, ok
 }
 
-func AsLinkedInArguments(args JobArguments) (LinkedInJobArguments, bool) {
-	linkedInArgs, ok := args.(*LinkedInArguments)
-	if !ok {
-		return nil, false
-	}
-	return linkedInArgs, true
+func AsTikTokSearchByQueryArguments(args JobArguments) (*TikTokSearchByQueryArguments, bool) {
+	v, ok := args.(*TikTokSearchByQueryArguments)
+	return v, ok
+}
+
+func AsTikTokSearchByTrendingArguments(args JobArguments) (*TikTokSearchByTrendingArguments, bool) {
+	v, ok := args.(*TikTokSearchByTrendingArguments)
+	return v, ok
 }
