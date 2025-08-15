@@ -59,6 +59,17 @@ type TikTokSearchByQueryResult struct {
 	AuthorPrivate         bool              `json:"author_private"`
 }
 
+type TikTokSearchByTrending struct {
+	CountryCode string `json:"country_code"`
+	Cover       string `json:"cover"`
+	Duration    int    `json:"duration"`
+	ID          string `json:"id"`
+	ItemID      string `json:"item_id"`
+	ItemURL     string `json:"item_url"`
+	Region      string `json:"region"`
+	Title       string `json:"title"`
+}
+
 type TikTokVideo struct {
 	ID            string              `json:"id"`
 	Height        int                 `json:"height"`
