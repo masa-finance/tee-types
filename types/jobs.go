@@ -80,7 +80,7 @@ const (
 var (
 	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
-	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapEmpty}
+	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapSearchByQuery, CapEmpty}
 	AlwaysAvailableLinkedInCaps  = []Capability{CapSearchByQuery, CapGetProfile, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
