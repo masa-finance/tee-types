@@ -58,6 +58,7 @@ const (
 	CapTelemetry           Capability = "telemetry"
 	CapTranscription       Capability = "transcription"
 	CapSearchByQuery       Capability = "searchbyquery"
+	CapSearchByTrending    Capability = "searchbytrending"
 	CapSearchByFullArchive Capability = "searchbyfullarchive"
 	CapSearchByProfile     Capability = "searchbyprofile"
 	CapGetById             Capability = "getbyid"
@@ -80,7 +81,7 @@ const (
 var (
 	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
-	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapSearchByQuery, CapEmpty}
+	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapSearchByQuery, CapSearchByTrending, CapEmpty}
 	AlwaysAvailableLinkedInCaps  = []Capability{CapSearchByQuery, CapGetProfile, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
