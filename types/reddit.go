@@ -39,19 +39,25 @@ var AllRedditSortTypes = util.NewSet(
 	RedditSortComments,
 )
 
+// RedditResult represents the response sent back from a Reddit query
+type RedditResult struct {
+	Items      []*RedditItem `json:"items"`
+	NextCursor string        `json:"next_cursor"`
+}
+
 // RedditStartURL represents a single start URL for the Apify Reddit scraper.
 type RedditStartURL struct {
 	URL    string `json:"url"`
 	Method string `json:"method"`
 }
 
-type RedditResponseType string
+type RedditItemType string
 
 const (
-	RedditUserResponse      RedditResponseType = "user"
-	RedditPostResponse      RedditResponseType = "post"
-	RedditCommentResponse   RedditResponseType = "comment"
-	RedditCommunityResponse RedditResponseType = "community"
+	RedditUserItem      RedditItemType = "user"
+	RedditPostItem      RedditItemType = "post"
+	RedditCommentItem   RedditItemType = "comment"
+	RedditCommunityItem RedditItemType = "community"
 )
 
 // RedditUser represents the data structure for a Reddit user from the Apify scraper.
@@ -124,10 +130,10 @@ type RedditCommunity struct {
 }
 
 type RedditTypeSwitch struct {
-	Type RedditResponseType `json:"type"`
+	Type RedditItemType `json:"type"`
 }
 
-type RedditResponse struct {
+type RedditItem struct {
 	TypeSwitch *RedditTypeSwitch
 	User       *RedditUser
 	Post       *RedditPost
@@ -135,29 +141,29 @@ type RedditResponse struct {
 	Community  *RedditCommunity
 }
 
-func (t *RedditResponse) UnmarshalJSON(data []byte) error {
+func (t *RedditItem) UnmarshalJSON(data []byte) error {
 	t.TypeSwitch = &RedditTypeSwitch{}
 	if err := json.Unmarshal(data, &t.TypeSwitch); err != nil {
 		return fmt.Errorf("failed to unmarshal reddit response type: %w", err)
 	}
 
 	switch t.TypeSwitch.Type {
-	case RedditUserResponse:
+	case RedditUserItem:
 		t.User = &RedditUser{}
 		if err := json.Unmarshal(data, t.User); err != nil {
 			return fmt.Errorf("failed to unmarshal reddit user: %w", err)
 		}
-	case RedditPostResponse:
+	case RedditPostItem:
 		t.Post = &RedditPost{}
 		if err := json.Unmarshal(data, t.Post); err != nil {
 			return fmt.Errorf("failed to unmarshal reddit post: %w", err)
 		}
-	case RedditCommentResponse:
+	case RedditCommentItem:
 		t.Comment = &RedditComment{}
 		if err := json.Unmarshal(data, t.Comment); err != nil {
 			return fmt.Errorf("failed to unmarshal reddit comment: %w", err)
 		}
-	case RedditCommunityResponse:
+	case RedditCommunityItem:
 		t.Community = &RedditCommunity{}
 		if err := json.Unmarshal(data, t.Community); err != nil {
 			return fmt.Errorf("failed to unmarshal reddit community: %w", err)
@@ -168,21 +174,21 @@ func (t *RedditResponse) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-// MarshalJSON implements the json.Marshaler interface for RedditResponse.
+// MarshalJSON implements the json.Marshaller interface for RedditResponse.
 // It unwraps the inner struct (User, Post, Comment, or Community) and marshals it directly.
-func (t *RedditResponse) MarshalJSON() ([]byte, error) {
+func (t *RedditItem) MarshalJSON() ([]byte, error) {
 	if t.TypeSwitch == nil {
 		return []byte("null"), nil
 	}
 
 	switch t.TypeSwitch.Type {
-	case RedditUserResponse:
+	case RedditUserItem:
 		return json.Marshal(t.User)
-	case RedditPostResponse:
+	case RedditPostItem:
 		return json.Marshal(t.Post)
-	case RedditCommentResponse:
+	case RedditCommentItem:
 		return json.Marshal(t.Comment)
-	case RedditCommunityResponse:
+	case RedditCommunityItem:
 		return json.Marshal(t.Community)
 	default:
 		return nil, fmt.Errorf("unknown Reddit response type: %s", t.TypeSwitch.Type)
