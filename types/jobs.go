@@ -50,6 +50,7 @@ const (
 	TwitterApiJob        JobType = "twitter-api"        // Twitter scraping with API keys
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
 	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping, keeping for unmarshalling logic
+	RedditJob            JobType = "reddit"             // Reddit scraping with Apify
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -73,7 +74,13 @@ const (
 	CapGetFollowers        Capability = "getfollowers"
 	CapGetSpace            Capability = "getspace"
 	CapGetProfile          Capability = "getprofile" // LinkedIn get profile capability
-	CapEmpty               Capability = ""
+	// Reddit capabilities
+	CapScrapeUrls        Capability = "scrapeurls"
+	CapSearchPosts       Capability = "searchposts"
+	CapSearchUsers       Capability = "searchusers"
+	CapSearchCommunities Capability = "searchcommunities"
+
+	CapEmpty Capability = ""
 )
 
 // Capability group constants for easy reuse
@@ -104,6 +111,9 @@ var (
 
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing, CapEmpty}
+
+	// RedditCaps are all the Reddit capabilities (only available with Apify)
+	RedditCaps = []Capability{CapScrapeUrls, CapSearchPosts, CapSearchUsers, CapSearchCommunities}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
@@ -128,6 +138,9 @@ var JobCapabilityMap = map[JobType][]Capability{
 	// TikTok job capabilities
 	TiktokJob: AlwaysAvailableTiktokCaps,
 
+	// Reddit job capabilities
+	RedditJob: RedditCaps,
+
 	// Telemetry job capabilities
 	TelemetryJob: AlwaysAvailableTelemetryCaps,
 }
@@ -140,5 +153,6 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterApifyJob:      CapGetFollowers,
 	WebJob:               CapScraper,
 	TiktokJob:            CapTranscription,
+	RedditJob:            CapScrapeUrls,
 	TelemetryJob:         CapTelemetry,
 }
