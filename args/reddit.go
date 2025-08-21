@@ -114,7 +114,7 @@ func (r *RedditArguments) Validate() error {
 				errs = append(errs, fmt.Errorf("%s is not a valid URL", q.URL))
 			} else {
 				if !strings.HasSuffix(u.Host, redditDomainSuffix) {
-					errs = append(errs, fmt.Errorf("Invalid Reddit URL %s", q.URL))
+					errs = append(errs, fmt.Errorf("invalid Reddit URL %s", q.URL))
 				}
 			}
 		}
