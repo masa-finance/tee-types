@@ -39,12 +39,6 @@ var AllRedditSortTypes = util.NewSet(
 	RedditSortComments,
 )
 
-// RedditResult represents the response sent back from a Reddit query
-type RedditResult struct {
-	Items      []*RedditItem `json:"items"`
-	NextCursor string        `json:"next_cursor"`
-}
-
 // RedditStartURL represents a single start URL for the Apify Reddit scraper.
 type RedditStartURL struct {
 	URL    string `json:"url"`
