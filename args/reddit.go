@@ -85,10 +85,12 @@ const redditDomainSuffix = "reddit.com"
 
 func (r *RedditArguments) Validate() error {
 	var errs []error
+	r.QueryType = teetypes.RedditQueryType(strings.ToLower(string(r.QueryType)))
 	if !teetypes.AllRedditQueryTypes.Contains(r.QueryType) {
 		errs = append(errs, ErrRedditInvalidType)
 	}
 
+	r.Sort = teetypes.RedditSortType(strings.ToLower(string(r.Sort)))
 	if !teetypes.AllRedditSortTypes.Contains(r.Sort) {
 		errs = append(errs, ErrRedditInvalidSort)
 	}
