@@ -97,6 +97,10 @@ func (r *RedditArguments) Validate() error {
 		errs = append(errs, ErrRedditTimeInTheFuture)
 	}
 
+	if len(errs) > 0 {
+		return errors.Join(errs...)
+	}
+
 	if r.QueryType == teetypes.RedditScrapeUrls {
 		if len(r.URLs) == 0 {
 			errs = append(errs, ErrRedditNoUrls)
