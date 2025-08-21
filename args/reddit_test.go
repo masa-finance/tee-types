@@ -159,7 +159,7 @@ var _ = Describe("RedditArguments", func() {
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Invalid Reddit URL"))
+			Expect(err.Error()).To(ContainSubstring("invalid Reddit URL"))
 		})
 
 		It("should fail with an invalid HTTP method", func() {
