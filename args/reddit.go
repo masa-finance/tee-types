@@ -110,6 +110,10 @@ func (r *RedditArguments) Validate() error {
 		}
 
 		for _, q := range r.URLs {
+			q.Method = strings.ToUpper(q.Method)
+			if q.Method == "" {
+				q.Method = "GET"
+			}
 			if !allowedHttpMethods.Contains(q.Method) {
 				errs = append(errs, fmt.Errorf("%s is not a valid HTTP method", q.Method))
 			}
