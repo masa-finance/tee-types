@@ -52,8 +52,6 @@ type RedditArguments struct {
 }
 
 func (r *RedditArguments) UnmarshalJSON(data []byte) error {
-	type Alias RedditArguments
-
 	// Set default values. They will be overridden if present in the JSON.
 	r.MaxItems = redditDefaultMaxItems
 	r.MaxPosts = redditDefaultMaxPosts
@@ -62,6 +60,8 @@ func (r *RedditArguments) UnmarshalJSON(data []byte) error {
 	r.MaxUsers = redditDefaultMaxUsers
 	r.Sort = redditDefaultSort
 
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
+	type Alias RedditArguments
 	aux := &struct {
 		*Alias
 	}{
@@ -111,10 +111,10 @@ func (r *RedditArguments) Validate() error {
 			errs = append(errs, ErrRedditQueriesNotAllowed)
 		}
 
-		for _, q := range r.URLs {
-			q.Method = strings.ToUpper(q.Method)
+		for i, q := range r.URLs {
+			r.URLs[i].Method = strings.ToUpper(q.Method)
 			if q.Method == "" {
-				q.Method = "GET"
+				r.URLs[i].Method = "GET"
 			}
 			if !allowedHttpMethods.Contains(q.Method) {
 				errs = append(errs, fmt.Errorf("%s is not a valid HTTP method", q.Method))
@@ -137,11 +137,7 @@ func (r *RedditArguments) Validate() error {
 		}
 	}
 
-	if len(errs) > 0 {
-		return errors.Join(errs...)
-	}
-
-	return nil
+	return errors.Join(errs...)
 }
 
 // ValidateForJobType validates Twitter arguments for a specific job type
