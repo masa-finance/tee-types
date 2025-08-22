@@ -21,6 +21,7 @@ type LinkedInArguments struct {
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
 func (l *LinkedInArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias LinkedInArguments
 	aux := &struct {
 		*Alias
