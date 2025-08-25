@@ -52,14 +52,6 @@ type RedditArguments struct {
 }
 
 func (r *RedditArguments) UnmarshalJSON(data []byte) error {
-	// Set default values. They will be overridden if present in the JSON.
-	r.MaxItems = redditDefaultMaxItems
-	r.MaxPosts = redditDefaultMaxPosts
-	r.MaxComments = redditDefaultMaxComments
-	r.MaxCommunities = redditDefaultMaxCommunities
-	r.MaxUsers = redditDefaultMaxUsers
-	r.Sort = redditDefaultSort
-
 	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias RedditArguments
 	aux := &struct {
@@ -85,6 +77,29 @@ const redditDomainSuffix = "reddit.com"
 
 func (r *RedditArguments) Validate() error {
 	var errs []error
+
+	if r.MaxItems == 0 {
+		r.MaxItems = redditDefaultMaxItems
+	}
+	if r.MaxPosts == 0 {
+		r.MaxPosts = redditDefaultMaxPosts
+	}
+	if r.MaxComments == 0 {
+		r.MaxComments = redditDefaultMaxComments
+	}
+	if r.MaxCommunities == 0 {
+		r.MaxCommunities = redditDefaultMaxCommunities
+	}
+	if r.MaxUsers == 0 {
+		r.MaxUsers = redditDefaultMaxUsers
+	}
+	if r.MaxResults == 0 {
+		r.MaxResults = r.MaxItems
+	}
+	if r.Sort == "" {
+		r.Sort = redditDefaultSort
+	}
+
 	r.QueryType = teetypes.RedditQueryType(strings.ToLower(string(r.QueryType)))
 	if !teetypes.AllRedditQueryTypes.Contains(r.QueryType) {
 		errs = append(errs, ErrRedditInvalidType)
