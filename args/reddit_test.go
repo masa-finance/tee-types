@@ -12,11 +12,15 @@ import (
 )
 
 var _ = Describe("RedditArguments", func() {
-	Describe("Unmarshalling", func() {
+	Describe("Marshalling and unmarshalling", func() {
 		It("should set default values", func() {
-			redditArgs := &args.RedditArguments{}
-			jsonData := `{"type": "searchposts", "queries": ["test"]}`
-			err := json.Unmarshal([]byte(jsonData), redditArgs)
+			redditArgs := args.RedditArguments{
+				QueryType: types.RedditSearchPosts,
+				Queries:   []string{"Zaphod", "Ford"},
+			}
+			jsonData, err := json.Marshal(redditArgs)
+			Expect(err).ToNot(HaveOccurred())
+			err = json.Unmarshal([]byte(jsonData), &redditArgs)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(redditArgs.MaxItems).To(Equal(uint(10)))
 			Expect(redditArgs.MaxPosts).To(Equal(uint(10)))
@@ -28,14 +32,29 @@ var _ = Describe("RedditArguments", func() {
 		})
 
 		It("should override default values", func() {
-			redditArgs := &args.RedditArguments{}
-			jsonData := `{"type": "searchposts", "queries": ["test"], "max_items": 20, "sort": "top"}`
-			err := json.Unmarshal([]byte(jsonData), redditArgs)
+			redditArgs := args.RedditArguments{
+				QueryType:      types.RedditSearchPosts,
+				Queries:        []string{"Zaphod", "Ford"},
+				MaxItems:       20,
+				MaxPosts:       21,
+				MaxComments:    22,
+				MaxCommunities: 23,
+				MaxUsers:       24,
+				Sort:           types.RedditSortTop,
+			}
+			jsonData, err := json.Marshal(redditArgs)
+			Expect(err).ToNot(HaveOccurred())
+			err = json.Unmarshal([]byte(jsonData), &redditArgs)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(redditArgs.MaxItems).To(Equal(uint(20)))
-			Expect(redditArgs.Sort).To(Equal(types.RedditSortTop))
+			Expect(redditArgs.MaxPosts).To(Equal(uint(21)))
+			Expect(redditArgs.MaxComments).To(Equal(uint(22)))
+			Expect(redditArgs.MaxCommunities).To(Equal(uint(23)))
+			Expect(redditArgs.MaxUsers).To(Equal(uint(24)))
 			Expect(redditArgs.MaxResults).To(Equal(uint(20)))
+			Expect(redditArgs.Sort).To(Equal(types.RedditSortTop))
 		})
+
 	})
 
 	Describe("Validation", func() {
