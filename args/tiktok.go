@@ -10,6 +10,19 @@ import (
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
+// Period constants for TikTok trending search
+const (
+	periodWeek  string = "7"
+	periodMonth string = "30"
+)
+
+const (
+	sortTrending string = "vv"
+	sortLike     string = "like"
+	sortComment  string = "comment"
+	sortRepost   string = "repost"
+)
+
 // TikTokTranscriptionArguments defines args for TikTok transcriptions
 type TikTokTranscriptionArguments struct {
 	VideoURL string `json:"video_url"`
@@ -189,7 +202,7 @@ type TikTokSearchByTrendingArguments struct {
 	CountryCode string `json:"country_code,omitempty"`
 	SortBy      string `json:"sort_by,omitempty"`
 	MaxItems    int    `json:"max_items,omitempty"`
-	Period      string `json:"period,omitempty"` // "7" or "30"
+	Period      string `json:"period,omitempty"`
 }
 
 func (t *TikTokSearchByTrendingArguments) UnmarshalJSON(data []byte) error {
@@ -203,31 +216,43 @@ func (t *TikTokSearchByTrendingArguments) UnmarshalJSON(data []byte) error {
 		t.CountryCode = "US"
 	}
 	if t.SortBy == "" {
-		t.SortBy = "vv"
+		t.SortBy = sortTrending
 	}
 	if t.Period == "" {
-		t.Period = "7"
+		t.Period = periodWeek
 	}
 	return t.Validate()
 }
 
 func (t *TikTokSearchByTrendingArguments) Validate() error {
+	allowedSorts := map[string]struct{}{
+		sortTrending: {}, sortLike: {}, sortComment: {}, sortRepost: {},
+	}
+
+	allowedPeriods := map[string]struct{}{
+		periodWeek:  {},
+		periodMonth: {},
+	}
+
 	allowedCountries := map[string]struct{}{
 		"AU": {}, "BR": {}, "CA": {}, "EG": {}, "FR": {}, "DE": {}, "ID": {}, "IL": {}, "IT": {}, "JP": {},
 		"MY": {}, "PH": {}, "RU": {}, "SA": {}, "SG": {}, "KR": {}, "ES": {}, "TW": {}, "TH": {}, "TR": {},
 		"AE": {}, "GB": {}, "US": {}, "VN": {},
 	}
+
 	if _, ok := allowedCountries[strings.ToUpper(t.CountryCode)]; !ok {
 		return fmt.Errorf("invalid country_code '%s'", t.CountryCode)
-	}
-	allowedSorts := map[string]struct{}{
-		"vv": {}, "like": {}, "comment": {}, "repost": {},
 	}
 	if _, ok := allowedSorts[strings.ToLower(t.SortBy)]; !ok {
 		return fmt.Errorf("invalid sort_by '%s'", t.SortBy)
 	}
-	if t.Period != "7" && t.Period != "30" {
-		return fmt.Errorf("invalid period '%s' (allowed: '7','30')", t.Period)
+	if _, ok := allowedPeriods[t.Period]; !ok {
+		// Extract keys for error message
+		var validKeys []string
+		for key := range allowedPeriods {
+			validKeys = append(validKeys, key)
+		}
+		return fmt.Errorf("invalid period '%s' (allowed: %s)", t.Period, strings.Join(validKeys, ", "))
 	}
 	if t.MaxItems < 0 {
 		return fmt.Errorf("max_items must be non-negative, got: %d", t.MaxItems)
