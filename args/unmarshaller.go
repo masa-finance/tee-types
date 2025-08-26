@@ -219,47 +219,4 @@ func unmarshalToStruct(args map[string]any, target any) error {
 	return nil
 }
 
-// TelemetryJobArguments for telemetry jobs (simple case)
-type TelemetryJobArguments struct{}
 
-func (t *TelemetryJobArguments) Validate() error {
-	return nil
-}
-
-func (t *TelemetryJobArguments) GetCapability() types.Capability {
-	return types.CapTelemetry
-}
-
-// Type assertion helpers
-func AsWebArguments(args JobArguments) (*WebSearchArguments, bool) {
-	webArgs, ok := args.(*WebSearchArguments)
-	return webArgs, ok
-}
-
-func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
-	twitterArgs, ok := args.(*TwitterSearchArguments)
-	if !ok {
-		return nil, false
-	}
-	return twitterArgs, true
-}
-
-// Use specific helpers for TikTok argument types:
-// - AsTikTokTranscriptionArguments
-// - AsTikTokSearchByQueryArguments
-// - AsTikTokSearchByTrendingArguments
-
-func AsTikTokTranscriptionArguments(args JobArguments) (*TikTokTranscriptionArguments, bool) {
-	v, ok := args.(*TikTokTranscriptionArguments)
-	return v, ok
-}
-
-func AsTikTokSearchByQueryArguments(args JobArguments) (*TikTokSearchByQueryArguments, bool) {
-	v, ok := args.(*TikTokSearchByQueryArguments)
-	return v, ok
-}
-
-func AsTikTokSearchByTrendingArguments(args JobArguments) (*TikTokSearchByTrendingArguments, bool) {
-	v, ok := args.(*TikTokSearchByTrendingArguments)
-	return v, ok
-}
