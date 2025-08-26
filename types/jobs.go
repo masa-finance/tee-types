@@ -159,7 +159,7 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
 	WebJob:               CapScraper,
-	TiktokJob:            CapSearchByQuery,
+	TiktokJob:            CapTranscription,
 	RedditJob:            CapScrapeUrls,
 	TelemetryJob:         CapTelemetry,
 }
