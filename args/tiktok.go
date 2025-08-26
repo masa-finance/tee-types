@@ -154,8 +154,8 @@ type TikTokSearchByQueryArguments struct {
 
 	Search    []string                 `json:"search,omitempty"`
 	StartUrls []string                 `json:"start_urls,omitempty"`
-	MaxItems  int                      `json:"max_items,omitempty"`
-	EndPage   int                      `json:"end_page,omitempty"`
+	MaxItems  uint                     `json:"max_items,omitempty"`
+	EndPage   uint                     `json:"end_page,omitempty"`
 	Proxy     *TikTokApifyProxySetting `json:"proxy,omitempty"`
 }
 
