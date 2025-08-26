@@ -59,6 +59,7 @@ const (
 	CapTelemetry           Capability = "telemetry"
 	CapTranscription       Capability = "transcription"
 	CapSearchByQuery       Capability = "searchbyquery"
+	CapSearchByTrending    Capability = "searchbytrending"
 	CapSearchByFullArchive Capability = "searchbyfullarchive"
 	CapSearchByProfile     Capability = "searchbyprofile"
 	CapGetById             Capability = "getbyid"
@@ -112,6 +113,9 @@ var (
 	// TwitterApifyCaps are Twitter capabilities available with Apify
 	TwitterApifyCaps = []Capability{CapGetFollowers, CapGetFollowing, CapEmpty}
 
+	// TiktokSearchCaps are Tiktok capabilities available with Apify
+	TiktokSearchCaps = []Capability{CapSearchByQuery, CapSearchByTrending}
+
 	// RedditCaps are all the Reddit capabilities (only available with Apify)
 	RedditCaps = []Capability{CapScrapeUrls, CapSearchPosts, CapSearchUsers, CapSearchCommunities}
 )
@@ -136,7 +140,10 @@ var JobCapabilityMap = map[JobType][]Capability{
 	WebJob: AlwaysAvailableWebCaps,
 
 	// TikTok job capabilities
-	TiktokJob: AlwaysAvailableTiktokCaps,
+	TiktokJob: combineCapabilities(
+		AlwaysAvailableTiktokCaps,
+		TiktokSearchCaps,
+	),
 
 	// Reddit job capabilities
 	RedditJob: RedditCaps,

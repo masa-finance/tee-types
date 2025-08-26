@@ -3,6 +3,7 @@ package args
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/masa-finance/tee-types/types"
 )
@@ -91,12 +92,52 @@ func unmarshalWebArguments(args map[string]any) (*WebSearchArguments, error) {
 	return webArgs, nil
 }
 
-func unmarshalTikTokArguments(args map[string]any) (*TikTokTranscriptionArguments, error) {
-	tiktokArgs := &TikTokTranscriptionArguments{}
-	if err := unmarshalToStruct(args, tiktokArgs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal TikTok job arguments: %w", err)
+func unmarshalTikTokArguments(args map[string]any) (JobArguments, error) {
+	// Unmarshal minimally to read QueryType like we do for Twitter
+	minimal := &QueryTypeArgument{}
+	if err := unmarshalToStruct(args, minimal); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
 	}
-	return tiktokArgs, nil
+	capability := types.Capability(strings.ToLower(minimal.QueryType))
+	if capability == types.CapEmpty {
+		defaultCap, exists := types.JobDefaultCapabilityMap[types.TiktokJob]
+		if !exists {
+			return nil, fmt.Errorf("no default capability configured for job type: %s", types.TiktokJob)
+		}
+		capability = defaultCap
+	}
+
+	switch capability {
+	case types.CapSearchByQuery:
+		searchArgs := &TikTokSearchByQueryArguments{}
+		if err := unmarshalToStruct(args, searchArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
+		}
+		if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return searchArgs, nil
+	case types.CapSearchByTrending:
+		searchArgs := &TikTokSearchByTrendingArguments{}
+		if err := unmarshalToStruct(args, searchArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
+		}
+		if err := searchArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return searchArgs, nil
+	case types.CapTranscription:
+		transcriptionArgs := &TikTokTranscriptionArguments{}
+		if err := unmarshalToStruct(args, transcriptionArgs); err != nil {
+			return nil, fmt.Errorf("failed to unmarshal TikTok transcription arguments: %w", err)
+		}
+		if err := transcriptionArgs.ValidateForJobType(types.TiktokJob); err != nil {
+			return nil, fmt.Errorf("tiktok job validation failed: %w", err)
+		}
+		return transcriptionArgs, nil
+	default:
+		return nil, fmt.Errorf("unknown tiktok type: %s", capability)
+	}
 }
 
 func unmarshalTwitterArguments(jobType types.JobType, args map[string]any) (*TwitterSearchArguments, error) {
@@ -176,50 +217,4 @@ func unmarshalToStruct(args map[string]any, target any) error {
 	}
 
 	return nil
-}
-
-// TelemetryJobArguments for telemetry jobs (simple case)
-type TelemetryJobArguments struct{}
-
-func (t *TelemetryJobArguments) Validate() error {
-	return nil
-}
-
-func (t *TelemetryJobArguments) GetCapability() types.Capability {
-	return types.CapTelemetry
-}
-
-// Type assertion helpers
-func AsWebArguments(args JobArguments) (*WebSearchArguments, bool) {
-	webArgs, ok := args.(*WebSearchArguments)
-	return webArgs, ok
-}
-
-func AsTwitterArguments(args JobArguments) (TwitterJobArguments, bool) {
-	twitterArgs, ok := args.(*TwitterSearchArguments)
-	if !ok {
-		return nil, false
-	}
-	return twitterArgs, true
-}
-
-func AsTikTokArguments(args JobArguments) (TikTokJobArguments, bool) {
-	tiktokArgs, ok := args.(*TikTokTranscriptionArguments)
-	if !ok {
-		return nil, false
-	}
-	return tiktokArgs, true
-}
-
-func AsTelemetryArguments(args JobArguments) (*TelemetryJobArguments, bool) {
-	telemetryArgs, ok := args.(*TelemetryJobArguments)
-	return telemetryArgs, ok
-}
-
-func AsLinkedInArguments(args JobArguments) (LinkedInJobArguments, bool) {
-	linkedInArgs, ok := args.(*LinkedInArguments)
-	if !ok {
-		return nil, false
-	}
-	return linkedInArgs, true
 }

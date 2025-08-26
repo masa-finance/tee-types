@@ -10,6 +10,19 @@ import (
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
+// Period constants for TikTok trending search
+const (
+	periodWeek  string = "7"
+	periodMonth string = "30"
+)
+
+const (
+	sortTrending string = "vv"
+	sortLike     string = "like"
+	sortComment  string = "comment"
+	sortRepost   string = "repost"
+)
+
 // TikTokTranscriptionArguments defines args for TikTok transcriptions
 type TikTokTranscriptionArguments struct {
 	VideoURL string `json:"video_url"`
@@ -113,4 +126,118 @@ func (t *TikTokTranscriptionArguments) validateLanguageCode() error {
 	}
 
 	return nil
+}
+
+// TikTokSearchByQueryArguments defines args for epctex/tiktok-search-scraper
+type TikTokSearchByQueryArguments struct {
+	QueryType string   `json:"type"`
+	Search    []string `json:"search,omitempty"`
+	StartUrls []string `json:"start_urls,omitempty"`
+	MaxItems  uint     `json:"max_items,omitempty"`
+	EndPage   uint     `json:"end_page,omitempty"`
+}
+
+func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
+	type Alias TikTokSearchByQueryArguments
+	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
+	}
+	t.QueryType = strings.ToLower(t.QueryType)
+	return t.Validate()
+}
+
+func (t *TikTokSearchByQueryArguments) Validate() error {
+	if len(t.Search) == 0 && len(t.StartUrls) == 0 {
+		return errors.New("either 'search' or 'start_urls' is required for searchbyquery")
+	}
+	return nil
+}
+
+func (t *TikTokSearchByQueryArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := jobType.ValidateCapability(teetypes.CapSearchByQuery); err != nil {
+		return err
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByQueryArguments) GetCapability() teetypes.Capability {
+	return teetypes.CapSearchByQuery
+}
+
+// TikTokSearchByTrendingArguments defines args for lexis-solutions/tiktok-trending-videos-scraper
+type TikTokSearchByTrendingArguments struct {
+	QueryType   string `json:"type"`
+	CountryCode string `json:"country_code,omitempty"`
+	SortBy      string `json:"sort_by,omitempty"`
+	MaxItems    int    `json:"max_items,omitempty"`
+	Period      string `json:"period,omitempty"`
+}
+
+func (t *TikTokSearchByTrendingArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
+	type Alias TikTokSearchByTrendingArguments
+	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
+	if err := json.Unmarshal(data, aux); err != nil {
+		return fmt.Errorf("failed to unmarshal TikTok searchbytrending arguments: %w", err)
+	}
+	t.QueryType = strings.ToLower(t.QueryType)
+	if t.CountryCode == "" {
+		t.CountryCode = "US"
+	}
+	if t.SortBy == "" {
+		t.SortBy = sortTrending
+	}
+	if t.Period == "" {
+		t.Period = periodWeek
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByTrendingArguments) Validate() error {
+	allowedSorts := map[string]struct{}{
+		sortTrending: {}, sortLike: {}, sortComment: {}, sortRepost: {},
+	}
+
+	allowedPeriods := map[string]struct{}{
+		periodWeek:  {},
+		periodMonth: {},
+	}
+
+	allowedCountries := map[string]struct{}{
+		"AU": {}, "BR": {}, "CA": {}, "EG": {}, "FR": {}, "DE": {}, "ID": {}, "IL": {}, "IT": {}, "JP": {},
+		"MY": {}, "PH": {}, "RU": {}, "SA": {}, "SG": {}, "KR": {}, "ES": {}, "TW": {}, "TH": {}, "TR": {},
+		"AE": {}, "GB": {}, "US": {}, "VN": {},
+	}
+
+	if _, ok := allowedCountries[strings.ToUpper(t.CountryCode)]; !ok {
+		return fmt.Errorf("invalid country_code '%s'", t.CountryCode)
+	}
+	if _, ok := allowedSorts[strings.ToLower(t.SortBy)]; !ok {
+		return fmt.Errorf("invalid sort_by '%s'", t.SortBy)
+	}
+	if _, ok := allowedPeriods[t.Period]; !ok {
+		// Extract keys for error message
+		var validKeys []string
+		for key := range allowedPeriods {
+			validKeys = append(validKeys, key)
+		}
+		return fmt.Errorf("invalid period '%s' (allowed: %s)", t.Period, strings.Join(validKeys, ", "))
+	}
+	if t.MaxItems < 0 {
+		return fmt.Errorf("max_items must be non-negative, got: %d", t.MaxItems)
+	}
+	return nil
+}
+
+func (t *TikTokSearchByTrendingArguments) ValidateForJobType(jobType teetypes.JobType) error {
+	if err := jobType.ValidateCapability(teetypes.CapSearchByTrending); err != nil {
+		return err
+	}
+	return t.Validate()
+}
+
+func (t *TikTokSearchByTrendingArguments) GetCapability() teetypes.Capability {
+	return teetypes.CapSearchByTrending
 }
