@@ -143,20 +143,13 @@ func (t *TikTokTranscriptionArguments) validateLanguageCode() error {
 	return nil
 }
 
-// Proxy settings used by Apify input
-type TikTokApifyProxySetting struct {
-	UseApifyProxy bool `json:"use_apify_proxy"`
-}
-
 // TikTokSearchByQueryArguments defines args for epctex/tiktok-search-scraper
 type TikTokSearchByQueryArguments struct {
-	QueryType string `json:"type"`
-
-	Search    []string                 `json:"search,omitempty"`
-	StartUrls []string                 `json:"start_urls,omitempty"`
-	MaxItems  uint                     `json:"max_items,omitempty"`
-	EndPage   uint                     `json:"end_page,omitempty"`
-	Proxy     *TikTokApifyProxySetting `json:"proxy,omitempty"`
+	QueryType string   `json:"type"`
+	Search    []string `json:"search,omitempty"`
+	StartUrls []string `json:"start_urls,omitempty"`
+	MaxItems  uint     `json:"max_items,omitempty"`
+	EndPage   uint     `json:"end_page,omitempty"`
 }
 
 func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
@@ -166,9 +159,6 @@ func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal TikTok searchbyquery arguments: %w", err)
 	}
 	t.QueryType = strings.ToLower(t.QueryType)
-	if t.Proxy == nil {
-		t.Proxy = &TikTokApifyProxySetting{UseApifyProxy: true}
-	}
 	return t.Validate()
 }
 
