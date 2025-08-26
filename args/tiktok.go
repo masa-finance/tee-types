@@ -108,6 +108,7 @@ type TikTokArguments struct {
 }
 
 func (t *TikTokArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias TikTokArguments
 	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
 	if err := json.Unmarshal(data, aux); err != nil {
@@ -153,6 +154,7 @@ type TikTokSearchByQueryArguments struct {
 }
 
 func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias TikTokSearchByQueryArguments
 	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
 	if err := json.Unmarshal(data, aux); err != nil {
@@ -165,12 +167,6 @@ func (t *TikTokSearchByQueryArguments) UnmarshalJSON(data []byte) error {
 func (t *TikTokSearchByQueryArguments) Validate() error {
 	if len(t.Search) == 0 && len(t.StartUrls) == 0 {
 		return errors.New("either 'search' or 'start_urls' is required for searchbyquery")
-	}
-	if t.MaxItems < 0 {
-		return fmt.Errorf("max_items must be non-negative, got: %d", t.MaxItems)
-	}
-	if t.EndPage < 0 {
-		return fmt.Errorf("end_page must be non-negative, got: %d", t.EndPage)
 	}
 	return nil
 }
@@ -196,6 +192,7 @@ type TikTokSearchByTrendingArguments struct {
 }
 
 func (t *TikTokSearchByTrendingArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias TikTokSearchByTrendingArguments
 	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
 	if err := json.Unmarshal(data, aux); err != nil {
