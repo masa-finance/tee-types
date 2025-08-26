@@ -94,12 +94,12 @@ func unmarshalWebArguments(args map[string]any) (*WebSearchArguments, error) {
 
 func unmarshalTikTokArguments(args map[string]any) (JobArguments, error) {
 	// Unmarshal minimally to read QueryType like we do for Twitter
-	minimal := &TikTokArguments{}
+	minimal := &QueryTypeArgument{}
 	if err := unmarshalToStruct(args, minimal); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
 	}
 	capability := types.Capability(strings.ToLower(minimal.QueryType))
-	if capability == types.Capability("") {
+	if capability == types.CapEmpty {
 		defaultCap, exists := types.JobDefaultCapabilityMap[types.TiktokJob]
 		if !exists {
 			return nil, fmt.Errorf("no default capability configured for job type: %s", types.TiktokJob)

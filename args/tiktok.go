@@ -102,22 +102,6 @@ func (t *TikTokTranscriptionArguments) GetLanguageCode() string {
 	return t.Language
 }
 
-// TikTokArguments provides a minimal structure to extract the QueryType (json "type")
-type TikTokArguments struct {
-	QueryType string `json:"type"`
-}
-
-func (t *TikTokArguments) UnmarshalJSON(data []byte) error {
-	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
-	type Alias TikTokArguments
-	aux := &struct{ *Alias }{Alias: (*Alias)(t)}
-	if err := json.Unmarshal(data, aux); err != nil {
-		return fmt.Errorf("failed to unmarshal TikTok arguments: %w", err)
-	}
-	t.QueryType = strings.ToLower(t.QueryType)
-	return nil
-}
-
 // ValidateForJobType validates TikTok arguments for a specific job type
 func (t *TikTokTranscriptionArguments) ValidateForJobType(jobType teetypes.JobType) error {
 	if err := t.Validate(); err != nil {
