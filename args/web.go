@@ -18,6 +18,7 @@ type WebSearchArguments struct {
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
 func (w *WebSearchArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias WebSearchArguments
 	aux := &struct {
 		*Alias

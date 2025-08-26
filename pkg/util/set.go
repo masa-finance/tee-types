@@ -23,17 +23,19 @@ func (s *Set[T]) Contains(item T) bool {
 }
 
 // Add inserts the given items into the set, deduplicating them.
-func (s *Set[T]) Add(items ...T) {
+func (s *Set[T]) Add(items ...T) *Set[T] {
 	for _, item := range items {
 		(*s)[item] = struct{}{}
 	}
+	return s
 }
 
 // Delete removes the given items from the set if it contains them.
-func (s *Set[T]) Delete(items ...T) {
+func (s *Set[T]) Delete(items ...T) *Set[T] {
 	for _, item := range items {
 		delete((*s), item)
 	}
+	return s
 }
 
 // Length returns the number of items in the set.

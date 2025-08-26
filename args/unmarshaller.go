@@ -50,6 +50,12 @@ type LinkedInJobArguments interface {
 	ValidateForJobType(jobType types.JobType) error
 }
 
+// RedditJobArguments extends JobArguments for Reddit-specific methods
+type RedditJobArguments interface {
+	JobArguments
+	ValidateForJobType(jobType types.JobType) error
+}
+
 // UnmarshalJobArguments unmarshals job arguments from a generic map into the appropriate typed struct
 // This works with both tee-indexer and tee-worker JobArguments types
 func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArguments, error) {
@@ -65,6 +71,9 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 
 	case types.LinkedInJob:
 		return unmarshalLinkedInArguments(jobType, args)
+
+	case types.RedditJob:
+		return unmarshalRedditArguments(jobType, args)
 
 	case types.TelemetryJob:
 		return &TelemetryJobArguments{}, nil
@@ -171,6 +180,27 @@ func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (*Li
 	}
 
 	return linkedInArgs, nil
+}
+
+func unmarshalRedditArguments(jobType types.JobType, args map[string]any) (*RedditArguments, error) {
+	redditArgs := &RedditArguments{}
+	if err := unmarshalToStruct(args, redditArgs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal Reddit job arguments: %w", err)
+	}
+
+	// If no QueryType is specified, use the default capability for this job type
+	if redditArgs.QueryType == "" {
+		if defaultCap, exists := types.JobDefaultCapabilityMap[jobType]; exists {
+			redditArgs.QueryType = types.RedditQueryType(defaultCap)
+		}
+	}
+
+	// Perform job-type-specific validation for Reddit
+	if err := redditArgs.ValidateForJobType(jobType); err != nil {
+		return nil, fmt.Errorf("reddit job validation failed: %w", err)
+	}
+
+	return redditArgs, nil
 }
 
 // unmarshalToStruct converts a map[string]any to a struct using JSON marshal/unmarshal

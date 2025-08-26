@@ -21,6 +21,7 @@ type TwitterSearchArguments struct {
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
 func (t *TwitterSearchArguments) UnmarshalJSON(data []byte) error {
+	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
 	type Alias TwitterSearchArguments
 	aux := &struct {
 		*Alias
