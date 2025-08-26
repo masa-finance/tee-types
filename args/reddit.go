@@ -32,6 +32,10 @@ const (
 	redditDefaultSort           = teetypes.RedditSortNew
 )
 
+const redditDomainSuffix = "reddit.com"
+
+var allowedHttpMethods = util.NewSet("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
+
 // RedditArguments defines args for Reddit scrapes
 // see https://apify.com/trudax/reddit-scraper
 type RedditArguments struct {
@@ -64,20 +68,13 @@ func (r *RedditArguments) UnmarshalJSON(data []byte) error {
 		return fmt.Errorf("failed to unmarshal Reddit arguments: %w", err)
 	}
 
-	if r.MaxResults == 0 {
-		r.MaxResults = r.MaxItems
-	}
+	r.setDefaultValues()
 
 	return r.Validate()
 }
 
-var allowedHttpMethods = util.NewSet("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-
-const redditDomainSuffix = "reddit.com"
-
-func (r *RedditArguments) Validate() error {
-	var errs []error
-
+// setDefaultValues sets the default values for the parameters that were not provided and canonicalizes the strings for later validation
+func (r *RedditArguments) setDefaultValues() {
 	if r.MaxItems == 0 {
 		r.MaxItems = redditDefaultMaxItems
 	}
@@ -101,11 +98,25 @@ func (r *RedditArguments) Validate() error {
 	}
 
 	r.QueryType = teetypes.RedditQueryType(strings.ToLower(string(r.QueryType)))
+	r.Sort = teetypes.RedditSortType(strings.ToLower(string(r.Sort)))
+
+	if r.QueryType == teetypes.RedditScrapeUrls {
+		for i, q := range r.URLs {
+			r.URLs[i].Method = strings.ToUpper(q.Method)
+			if q.Method == "" {
+				r.URLs[i].Method = "GET"
+			}
+		}
+	}
+}
+
+func (r *RedditArguments) Validate() error {
+	var errs []error
+
 	if !teetypes.AllRedditQueryTypes.Contains(r.QueryType) {
 		errs = append(errs, ErrRedditInvalidType)
 	}
 
-	r.Sort = teetypes.RedditSortType(strings.ToLower(string(r.Sort)))
 	if !teetypes.AllRedditSortTypes.Contains(r.Sort) {
 		errs = append(errs, ErrRedditInvalidSort)
 	}
@@ -126,11 +137,7 @@ func (r *RedditArguments) Validate() error {
 			errs = append(errs, ErrRedditQueriesNotAllowed)
 		}
 
-		for i, q := range r.URLs {
-			r.URLs[i].Method = strings.ToUpper(q.Method)
-			if q.Method == "" {
-				r.URLs[i].Method = "GET"
-			}
+		for _, q := range r.URLs {
 			if !allowedHttpMethods.Contains(q.Method) {
 				errs = append(errs, fmt.Errorf("%s is not a valid HTTP method", q.Method))
 			}
@@ -138,7 +145,7 @@ func (r *RedditArguments) Validate() error {
 			if err != nil {
 				errs = append(errs, fmt.Errorf("%s is not a valid URL", q.URL))
 			} else {
-				if !strings.HasSuffix(u.Host, redditDomainSuffix) {
+				if !strings.HasSuffix(strings.ToLower(u.Host), redditDomainSuffix) {
 					errs = append(errs, fmt.Errorf("invalid Reddit URL %s", q.URL))
 				}
 			}
