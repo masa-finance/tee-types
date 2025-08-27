@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/masa-finance/tee-types/pkg/util"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
@@ -33,8 +32,6 @@ const (
 )
 
 const redditDomainSuffix = "reddit.com"
-
-var allowedHttpMethods = util.NewSet("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
 
 // RedditArguments defines args for Reddit scrapes
 // see https://apify.com/trudax/reddit-scraper
