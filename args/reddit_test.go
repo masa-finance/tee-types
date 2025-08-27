@@ -71,10 +71,8 @@ var _ = Describe("RedditArguments", func() {
 		It("should succeed with valid scrapeurls arguments", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditScrapeUrls,
-				URLs: []types.RedditStartURL{
-					{URL: "https://www.reddit.com/r/golang/", Method: "GET"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"https://www.reddit.com/r/golang/comments/foo/bar"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).ToNot(HaveOccurred())
@@ -133,10 +131,8 @@ var _ = Describe("RedditArguments", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditScrapeUrls,
 				Queries:   []string{"test"},
-				URLs: []types.RedditStartURL{
-					{URL: "https://www.reddit.com/r/golang/", Method: "GET"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"https://www.reddit.com/r/golang/comments/foo/bar/"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(MatchError(args.ErrRedditQueriesNotAllowed))
@@ -146,10 +142,8 @@ var _ = Describe("RedditArguments", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditSearchPosts,
 				Queries:   []string{"test"},
-				URLs: []types.RedditStartURL{
-					{URL: "https://www.reddit.com/r/golang/", Method: "GET"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"https://www.reddit.com/r/golang/comments/foo/bar"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(MatchError(args.ErrRedditUrlsNotAllowed))
@@ -158,10 +152,8 @@ var _ = Describe("RedditArguments", func() {
 		It("should fail with an invalid URL", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditScrapeUrls,
-				URLs: []types.RedditStartURL{
-					{URL: "ht tp://invalid-url.com", Method: "GET"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"ht tp://invalid-url.com"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(HaveOccurred())
@@ -171,27 +163,23 @@ var _ = Describe("RedditArguments", func() {
 		It("should fail with an invalid domain", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditScrapeUrls,
-				URLs: []types.RedditStartURL{
-					{URL: "https://www.google.com", Method: "GET"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"https://www.google.com"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("invalid Reddit URL"))
 		})
 
-		It("should fail with an invalid HTTP method", func() {
+		It("should fail if the URL is not a post or comment", func() {
 			redditArgs := &args.RedditArguments{
 				QueryType: types.RedditScrapeUrls,
-				URLs: []types.RedditStartURL{
-					{URL: "https://www.reddit.com/r/golang/", Method: "INVALID"},
-				},
-				Sort: types.RedditSortNew,
+				URLs:      []string{"https://www.reddit.com/r/golang/"},
+				Sort:      types.RedditSortNew,
 			}
 			err := redditArgs.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("is not a valid HTTP method"))
+			Expect(err.Error()).To(ContainSubstring("not a Reddit post or comment URL"))
 		})
 	})
 })

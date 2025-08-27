@@ -8,7 +8,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/masa-finance/tee-types/pkg/util"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
@@ -34,25 +33,23 @@ const (
 
 const redditDomainSuffix = "reddit.com"
 
-var allowedHttpMethods = util.NewSet("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-
 // RedditArguments defines args for Reddit scrapes
 // see https://apify.com/trudax/reddit-scraper
 type RedditArguments struct {
-	QueryType      teetypes.RedditQueryType  `json:"type"`
-	Queries        []string                  `json:"queries"`
-	URLs           []teetypes.RedditStartURL `json:"urls"`
-	Sort           teetypes.RedditSortType   `json:"sort"`
-	IncludeNSFW    bool                      `json:"include_nsfw"`
-	SkipPosts      bool                      `json:"skip_posts"`      // Valid only for searchusers
-	After          time.Time                 `json:"after"`           // valid only for scrapeurls and searchposts
-	MaxItems       uint                      `json:"max_items"`       // Max number of items to scrape (total), default 10
-	MaxResults     uint                      `json:"max_results"`     // Max number of results per page, default MaxItems
-	MaxPosts       uint                      `json:"max_posts"`       // Max number of posts per page, default 10
-	MaxComments    uint                      `json:"max_comments"`    // Max number of comments per page, default 10
-	MaxCommunities uint                      `json:"max_communities"` // Max number of communities per page, default 2
-	MaxUsers       uint                      `json:"max_users"`       // Max number of users per page, default 2
-	NextCursor     string                    `json:"next_cursor"`
+	QueryType      teetypes.RedditQueryType `json:"type"`
+	Queries        []string                 `json:"queries"`
+	URLs           []string                 `json:"urls"`
+	Sort           teetypes.RedditSortType  `json:"sort"`
+	IncludeNSFW    bool                     `json:"include_nsfw"`
+	SkipPosts      bool                     `json:"skip_posts"`      // Valid only for searchusers
+	After          time.Time                `json:"after"`           // valid only for scrapeurls and searchposts
+	MaxItems       uint                     `json:"max_items"`       // Max number of items to scrape (total), default 10
+	MaxResults     uint                     `json:"max_results"`     // Max number of results per page, default MaxItems
+	MaxPosts       uint                     `json:"max_posts"`       // Max number of posts per page, default 10
+	MaxComments    uint                     `json:"max_comments"`    // Max number of comments per page, default 10
+	MaxCommunities uint                     `json:"max_communities"` // Max number of communities per page, default 2
+	MaxUsers       uint                     `json:"max_users"`       // Max number of users per page, default 2
+	NextCursor     string                   `json:"next_cursor"`
 }
 
 func (r *RedditArguments) UnmarshalJSON(data []byte) error {
@@ -99,15 +96,6 @@ func (r *RedditArguments) setDefaultValues() {
 
 	r.QueryType = teetypes.RedditQueryType(strings.ToLower(string(r.QueryType)))
 	r.Sort = teetypes.RedditSortType(strings.ToLower(string(r.Sort)))
-
-	if r.QueryType == teetypes.RedditScrapeUrls {
-		for i, q := range r.URLs {
-			r.URLs[i].Method = strings.ToUpper(q.Method)
-			if q.Method == "" {
-				r.URLs[i].Method = "GET"
-			}
-		}
-	}
 }
 
 func (r *RedditArguments) Validate() error {
@@ -137,16 +125,19 @@ func (r *RedditArguments) Validate() error {
 			errs = append(errs, ErrRedditQueriesNotAllowed)
 		}
 
-		for _, q := range r.URLs {
-			if !allowedHttpMethods.Contains(q.Method) {
-				errs = append(errs, fmt.Errorf("%s is not a valid HTTP method", q.Method))
-			}
-			u, err := url.Parse(q.URL)
+		for _, u := range r.URLs {
+			u, err := url.Parse(u)
 			if err != nil {
-				errs = append(errs, fmt.Errorf("%s is not a valid URL", q.URL))
+				errs = append(errs, fmt.Errorf("%s is not a valid URL", u))
 			} else {
 				if !strings.HasSuffix(strings.ToLower(u.Host), redditDomainSuffix) {
-					errs = append(errs, fmt.Errorf("invalid Reddit URL %s", q.URL))
+					errs = append(errs, fmt.Errorf("invalid Reddit URL %s", u))
+				}
+				if !strings.HasPrefix(u.Path, "/r/") {
+					errs = append(errs, fmt.Errorf("%s is not a Reddit post or comment URL (missing /r/)", u))
+				}
+				if !strings.Contains(u.Path, "/comments/") {
+					errs = append(errs, fmt.Errorf("%s is not a Reddit post or comment URL (missing /comments/)", u))
 				}
 			}
 		}
