@@ -20,6 +20,6 @@ func (q *QueryTypeArgument) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, aux); err != nil {
 		return fmt.Errorf("failed to unmarshal QueryType arguments: %w", err)
 	}
-	q.QueryType = strings.ToLower(q.QueryType)
+	q.QueryType = strings.ToLower(aux.QueryType)
 	return nil
 }
