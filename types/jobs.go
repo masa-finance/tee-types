@@ -24,7 +24,7 @@ func (j JobType) ValidateCapability(capability Capability) error {
 	}
 
 	if !slices.Contains(validCaps, capability) {
-		return fmt.Errorf("capability '%s' is not valid for job type '%s'. Valid capabilities: %v",
+		return fmt.Errorf("capability '%s' is not valid for job type '%s'. valid capabilities: %v",
 			capability, j, validCaps)
 	}
 
@@ -51,6 +51,7 @@ const (
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
 	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping, keeping for unmarshalling logic
 	RedditJob            JobType = "reddit"             // Reddit scraping with Apify
+	LLMJob               JobType = "llm"                // LLM processing
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -74,26 +75,26 @@ const (
 	CapGetFollowing        Capability = "getfollowing"
 	CapGetFollowers        Capability = "getfollowers"
 	CapGetSpace            Capability = "getspace"
-	CapGetProfile          Capability = "getprofile" // LinkedIn get profile capability
+	CapGetProfile          Capability = "getprofile"
 	// Reddit capabilities
 	CapScrapeUrls        Capability = "scrapeurls"
 	CapSearchPosts       Capability = "searchposts"
 	CapSearchUsers       Capability = "searchusers"
 	CapSearchCommunities Capability = "searchcommunities"
+	// LLM capabilities
+	CapDatasetProcessor Capability = "datasetprocessor"
 
 	CapEmpty Capability = ""
 )
 
 // Capability group constants for easy reuse
 var (
-	AlwaysAvailableWebCaps       = []Capability{CapScraper, CapEmpty}
 	AlwaysAvailableTelemetryCaps = []Capability{CapTelemetry, CapEmpty}
 	AlwaysAvailableTiktokCaps    = []Capability{CapTranscription, CapEmpty}
 	AlwaysAvailableLinkedInCaps  = []Capability{CapSearchByQuery, CapGetProfile, CapEmpty}
 
 	// AlwaysAvailableCapabilities defines the job capabilities that are always available regardless of configuration
 	AlwaysAvailableCapabilities = WorkerCapabilities{
-		WebJob:       AlwaysAvailableWebCaps,
 		TelemetryJob: AlwaysAvailableTelemetryCaps,
 		TiktokJob:    AlwaysAvailableTiktokCaps,
 	}
@@ -118,6 +119,12 @@ var (
 
 	// RedditCaps are all the Reddit capabilities (only available with Apify)
 	RedditCaps = []Capability{CapScrapeUrls, CapSearchPosts, CapSearchUsers, CapSearchCommunities}
+
+	// WebCaps are all the Web capabilities (only available with Apify)
+	WebCaps = []Capability{CapScraper, CapEmpty}
+
+	// LLMCaps are all the LLM capabilities (only available with Apify)
+	LLMCaps = []Capability{CapDatasetProcessor, CapEmpty}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
@@ -137,7 +144,10 @@ var JobCapabilityMap = map[JobType][]Capability{
 	TwitterApifyJob: TwitterApifyCaps,
 
 	// Web job capabilities
-	WebJob: AlwaysAvailableWebCaps,
+	WebJob: WebCaps,
+
+	// LLM job capabilities
+	LLMJob: LLMCaps,
 
 	// TikTok job capabilities
 	TiktokJob: combineCapabilities(
@@ -159,6 +169,7 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
 	WebJob:               CapScraper,
+	LLMJob:               CapDatasetProcessor,
 	TiktokJob:            CapTranscription,
 	RedditJob:            CapScrapeUrls,
 	TelemetryJob:         CapTelemetry,

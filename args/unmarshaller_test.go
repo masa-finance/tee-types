@@ -14,16 +14,29 @@ var _ = Describe("Unmarshaller", func() {
 			It("should unmarshal the arguments correctly", func() {
 				argsMap := map[string]any{
 					"url":       "https://example.com",
-					"selector":  "h1",
 					"max_depth": 2,
 				}
 				jobArgs, err := args.UnmarshalJobArguments(types.WebJob, argsMap)
 				Expect(err).ToNot(HaveOccurred())
-				webArgs, ok := jobArgs.(*args.WebSearchArguments)
+				webArgs, ok := jobArgs.(*args.WebArguments)
 				Expect(ok).To(BeTrue())
 				Expect(webArgs.URL).To(Equal("https://example.com"))
-				Expect(webArgs.Selector).To(Equal("h1"))
 				Expect(webArgs.MaxDepth).To(Equal(2))
+			})
+		})
+
+		Context("with a LLMJob", func() {
+			It("should unmarshal the arguments correctly", func() {
+				argsMap := map[string]any{
+					"dataset_id": "123",
+					"prompt":     "summarize the content of this webpage: ${markdown}",
+				}
+				jobArgs, err := args.UnmarshalJobArguments(types.LLMJob, argsMap)
+				Expect(err).ToNot(HaveOccurred())
+				llmArgs, ok := jobArgs.(*args.LLMProcessorArguments)
+				Expect(ok).To(BeTrue())
+				Expect(llmArgs.DatasetId).To(Equal("123"))
+				Expect(llmArgs.Prompt).To(Equal("summarize the content of this webpage: ${markdown}"))
 			})
 		})
 

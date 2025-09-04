@@ -2,24 +2,39 @@ package args
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/url"
 
-	"github.com/masa-finance/tee-types/pkg/util"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
-type WebSearchArguments struct {
-	URL      string `json:"url"`
-	Selector string `json:"selector"`
-	Depth    int    `json:"depth"`
-	MaxDepth int    `json:"max_depth"`
+var (
+	ErrWebURLRequired      = errors.New("url is required")
+	ErrWebURLInvalid       = errors.New("invalid URL format")
+	ErrWebURLSchemeMissing = errors.New("url must include a scheme (http:// or https://)")
+	ErrWebMaxDepth         = errors.New("max depth must be non-negative")
+	ErrWebMaxPages         = errors.New("max pages must be at least 1")
+)
+
+const (
+	webDefaultMaxPages             = 1
+	webDefaultMethod               = "GET"
+	webDefaultRespectRobotsTxtFile = false
+	webDefaultSaveMarkdown         = true
+)
+
+type WebArguments struct {
+	QueryType teetypes.WebQueryType `json:"type"`
+	URL       string                `json:"url"`
+	MaxDepth  int                   `json:"max_depth"`
+	MaxPages  int                   `json:"max_pages"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
-func (w *WebSearchArguments) UnmarshalJSON(data []byte) error {
+func (w *WebArguments) UnmarshalJSON(data []byte) error {
 	// Prevent infinite recursion (you call json.Unmarshal which then calls `UnmarshalJSON`, which then calls `json.Unmarshal`...)
-	type Alias WebSearchArguments
+	type Alias WebArguments
 	aux := &struct {
 		*Alias
 	}{
@@ -27,46 +42,50 @@ func (w *WebSearchArguments) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, aux); err != nil {
-		return fmt.Errorf("failed to unmarshal Web arguments: %w", err)
+		return fmt.Errorf("failed to unmarshal web arguments: %w", err)
 	}
+
+	w.setDefaultValues()
 
 	return w.Validate()
 }
 
+func (w *WebArguments) setDefaultValues() {
+	if w.MaxPages == 0 {
+		w.MaxPages = webDefaultMaxPages
+	}
+}
+
 // Validate validates the Web arguments
-func (w *WebSearchArguments) Validate() error {
+func (w *WebArguments) Validate() error {
 	if w.URL == "" {
-		return fmt.Errorf("url is required")
+		return ErrWebURLRequired
 	}
 
 	// Validate URL format
 	parsedURL, err := url.Parse(w.URL)
 	if err != nil {
-		return fmt.Errorf("invalid URL format: %w", err)
+		return fmt.Errorf("%w: %v", ErrWebURLInvalid, err)
 	}
 
 	// Ensure URL has a scheme
 	if parsedURL.Scheme == "" {
-		return fmt.Errorf("URL must include a scheme (http:// or https://)")
+		return ErrWebURLSchemeMissing
 	}
 
 	if w.MaxDepth < 0 {
-		return fmt.Errorf("max_depth must be non-negative, got: %d", w.MaxDepth)
+		return fmt.Errorf("%w: got %v", ErrWebMaxDepth, w.MaxDepth)
 	}
 
-	if w.Depth < 0 {
-		return fmt.Errorf("depth must be non-negative, got: %d", w.Depth)
-	}
-
-	if w.Depth > w.MaxDepth && w.MaxDepth > 0 {
-		return fmt.Errorf("depth (%d) cannot exceed max_depth (%d)", w.Depth, w.MaxDepth)
+	if w.MaxPages < 1 {
+		return fmt.Errorf("%w: got %v", ErrWebMaxPages, w.MaxPages)
 	}
 
 	return nil
 }
 
 // ValidateForJobType validates Web arguments for a specific job type
-func (w *WebSearchArguments) ValidateForJobType(jobType teetypes.JobType) error {
+func (w *WebArguments) ValidateForJobType(jobType teetypes.JobType) error {
 	if err := w.Validate(); err != nil {
 		return err
 	}
@@ -76,21 +95,18 @@ func (w *WebSearchArguments) ValidateForJobType(jobType teetypes.JobType) error 
 }
 
 // GetCapability returns the capability for web operations (always scraper)
-func (w *WebSearchArguments) GetCapability() teetypes.Capability {
+func (w *WebArguments) GetCapability() teetypes.Capability {
 	return teetypes.CapScraper
 }
 
-// IsDeepScrape returns true if this is a deep scraping operation
-func (w *WebSearchArguments) IsDeepScrape() bool {
-	return w.MaxDepth > 1 || w.Depth > 0
-}
-
-// HasSelector returns true if a CSS selector is specified
-func (w *WebSearchArguments) HasSelector() bool {
-	return w.Selector != ""
-}
-
-// GetEffectiveMaxDepth returns the effective maximum depth for scraping
-func (w *WebSearchArguments) GetEffectiveMaxDepth() int {
-	return util.Max(w.MaxDepth, 1)
+func (w WebArguments) ToWebScraperRequest() teetypes.WebScraperRequest {
+	return teetypes.WebScraperRequest{
+		StartUrls: []teetypes.WebStartURL{
+			{URL: w.URL, Method: webDefaultMethod},
+		},
+		MaxCrawlDepth:        w.MaxDepth,
+		MaxCrawlPages:        w.MaxPages,
+		RespectRobotsTxtFile: webDefaultRespectRobotsTxtFile,
+		SaveMarkdown:         webDefaultSaveMarkdown,
+	}
 }
