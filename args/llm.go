@@ -79,7 +79,7 @@ func (l *LLMProcessorArguments) ValidateForJobType(jobType teetypes.JobType) err
 	return jobType.ValidateCapability(l.GetCapability())
 }
 
-// GetCapability returns the capability for web operations (always scraper)
+// GetCapability returns the capability for llm operations (always datasetprocessor currently)
 func (l *LLMProcessorArguments) GetCapability() teetypes.Capability {
 	return teetypes.CapDatasetProcessor
 }
@@ -90,7 +90,7 @@ func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequ
 		Prompt:          l.Prompt,
 		MaxTokens:       l.MaxTokens,
 		Temperature:     l.Temperature,
-		MultipleColumns: llmDefaultMultipleColumns,
-		Model:           llmDefaultModel,
+		MultipleColumns: llmDefaultMultipleColumns, // overrides default in actor API
+		Model:           llmDefaultModel,           // overrides default in actor API
 	}
 }
