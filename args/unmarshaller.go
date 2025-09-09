@@ -49,14 +49,6 @@ func unmarshalWebArguments(args map[string]any) (*WebArguments, error) {
 	return webArgs, nil
 }
 
-func unmarshalLLMArguments(args map[string]any) (*LLMProcessorArguments, error) {
-	llmArgs := &LLMProcessorArguments{}
-	if err := unmarshalToStruct(args, llmArgs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal LLM job arguments: %w", err)
-	}
-	return llmArgs, nil
-}
-
 func unmarshalTikTokArguments(args map[string]any) (JobArguments, error) {
 	// Unmarshal minimally to read QueryType like we do for Twitter
 	minimal := &QueryTypeArgument{}
