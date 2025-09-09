@@ -51,7 +51,6 @@ const (
 	TwitterApifyJob      JobType = "twitter-apify"      // Twitter scraping with Apify
 	LinkedInJob          JobType = "linkedin"           // LinkedIn scraping, keeping for unmarshalling logic
 	RedditJob            JobType = "reddit"             // Reddit scraping with Apify
-	LLMJob               JobType = "llm"                // LLM processing
 )
 
 // Capability constants - typed to prevent typos and enable discoverability
@@ -81,8 +80,6 @@ const (
 	CapSearchPosts       Capability = "searchposts"
 	CapSearchUsers       Capability = "searchusers"
 	CapSearchCommunities Capability = "searchcommunities"
-	// LLM capabilities
-	CapDatasetProcessor Capability = "datasetprocessor"
 
 	CapEmpty Capability = ""
 )
@@ -122,9 +119,6 @@ var (
 
 	// WebCaps are all the Web capabilities (only available with Apify)
 	WebCaps = []Capability{CapScraper, CapEmpty}
-
-	// LLMCaps are all the LLM capabilities (only available with Apify)
-	LLMCaps = []Capability{CapDatasetProcessor, CapEmpty}
 )
 
 // JobCapabilityMap defines which capabilities are valid for each job type
@@ -146,9 +140,6 @@ var JobCapabilityMap = map[JobType][]Capability{
 	// Web job capabilities
 	WebJob: WebCaps,
 
-	// LLM job capabilities
-	LLMJob: LLMCaps,
-
 	// TikTok job capabilities
 	TiktokJob: combineCapabilities(
 		AlwaysAvailableTiktokCaps,
@@ -169,7 +160,6 @@ var JobDefaultCapabilityMap = map[JobType]Capability{
 	TwitterApiJob:        CapSearchByQuery,
 	TwitterApifyJob:      CapGetFollowers,
 	WebJob:               CapScraper,
-	LLMJob:               CapDatasetProcessor,
 	TiktokJob:            CapTranscription,
 	RedditJob:            CapScrapeUrls,
 	TelemetryJob:         CapTelemetry,

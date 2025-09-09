@@ -8,14 +8,12 @@ import (
 	. "github.com/onsi/gomega"
 
 	"github.com/masa-finance/tee-types/args"
-	"github.com/masa-finance/tee-types/types"
 )
 
 var _ = Describe("LLMProcessorArguments", func() {
 	Describe("Marshalling and unmarshalling", func() {
 		It("should set default values", func() {
 			llmArgs := args.LLMProcessorArguments{
-				QueryType: "datasetprocessor",
 				DatasetId: "ds1",
 				Prompt:    "summarize: ${markdown}",
 			}
@@ -29,7 +27,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 
 		It("should override default values", func() {
 			llmArgs := args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				Prompt:      "summarize: ${markdown}",
 				MaxTokens:   123,
@@ -61,7 +58,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 	Describe("Validation", func() {
 		It("should succeed with valid arguments", func() {
 			llmArgs := &args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   10,
@@ -73,7 +69,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 
 		It("should fail when dataset_id is missing", func() {
 			llmArgs := &args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				Prompt:      "p",
 				MaxTokens:   10,
 				Temperature: "0.2",
@@ -84,7 +79,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 
 		It("should fail when prompt is missing", func() {
 			llmArgs := &args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				MaxTokens:   10,
 				Temperature: "0.2",
@@ -95,7 +89,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 
 		It("should fail when max tokens is negative", func() {
 			llmArgs := &args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   -1,
@@ -107,29 +100,9 @@ var _ = Describe("LLMProcessorArguments", func() {
 		})
 	})
 
-	Describe("Job capability", func() {
-		It("should return the datasetprocessor capability", func() {
-			llmArgs := &args.LLMProcessorArguments{}
-			Expect(llmArgs.GetCapability()).To(Equal(types.CapDatasetProcessor))
-		})
-
-		It("should validate capability for LLMJob", func() {
-			llmArgs := &args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
-				DatasetId:   "ds1",
-				Prompt:      "p",
-				MaxTokens:   1,
-				Temperature: "0.1",
-			}
-			err := llmArgs.ValidateForJobType(types.LLMJob)
-			Expect(err).ToNot(HaveOccurred())
-		})
-	})
-
 	Describe("ToLLMProcessorRequest", func() {
 		It("should map fields and defaults correctly", func() {
 			llmArgs := args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   0, // default applied in To*
@@ -146,7 +119,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 
 		It("should map fields correctly when set", func() {
 			llmArgs := args.LLMProcessorArguments{
-				QueryType:   "datasetprocessor",
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   42,

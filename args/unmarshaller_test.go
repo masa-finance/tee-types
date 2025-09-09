@@ -25,21 +25,6 @@ var _ = Describe("Unmarshaller", func() {
 			})
 		})
 
-		Context("with a LLMJob", func() {
-			It("should unmarshal the arguments correctly", func() {
-				argsMap := map[string]any{
-					"dataset_id": "123",
-					"prompt":     "summarize the content of this webpage: ${markdown}",
-				}
-				jobArgs, err := args.UnmarshalJobArguments(types.LLMJob, argsMap)
-				Expect(err).ToNot(HaveOccurred())
-				llmArgs, ok := jobArgs.(*args.LLMProcessorArguments)
-				Expect(ok).To(BeTrue())
-				Expect(llmArgs.DatasetId).To(Equal("123"))
-				Expect(llmArgs.Prompt).To(Equal("summarize the content of this webpage: ${markdown}"))
-			})
-		})
-
 		Context("with a TiktokJob", func() {
 			It("should unmarshal the arguments correctly", func() {
 				argsMap := map[string]any{

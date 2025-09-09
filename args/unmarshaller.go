@@ -20,9 +20,6 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 	case types.WebJob:
 		return unmarshalWebArguments(args)
 
-	case types.LLMJob:
-		return unmarshalLLMArguments(args)
-
 	case types.TiktokJob:
 		return unmarshalTikTokArguments(args)
 

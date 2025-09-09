@@ -22,7 +22,6 @@ const (
 )
 
 type LLMProcessorArguments struct {
-	QueryType   string `json:"type"`
 	DatasetId   string `json:"dataset_id"`
 	Prompt      string `json:"prompt"`
 	MaxTokens   int    `json:"max_tokens"`
@@ -68,20 +67,6 @@ func (l *LLMProcessorArguments) Validate() error {
 		return fmt.Errorf("%w: got %v", ErrLLMMaxTokensNegative, l.MaxTokens)
 	}
 	return nil
-}
-
-func (l *LLMProcessorArguments) ValidateForJobType(jobType teetypes.JobType) error {
-	if err := l.Validate(); err != nil {
-		return err
-	}
-
-	// Validate QueryType against job-specific capabilities
-	return jobType.ValidateCapability(l.GetCapability())
-}
-
-// GetCapability returns the capability for llm operations (always datasetprocessor currently)
-func (l *LLMProcessorArguments) GetCapability() teetypes.Capability {
-	return teetypes.CapDatasetProcessor
 }
 
 func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequest {
