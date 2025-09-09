@@ -18,10 +18,10 @@ var (
 )
 
 const (
-	webDefaultMaxPages             = 1
-	webDefaultMethod               = "GET"
-	webDefaultRespectRobotsTxtFile = false
-	webDefaultSaveMarkdown         = true
+	WebDefaultMaxPages             = 1
+	WebDefaultMethod               = "GET"
+	WebDefaultRespectRobotsTxtFile = false
+	WebDefaultSaveMarkdown         = true
 )
 
 type WebArguments struct {
@@ -52,7 +52,7 @@ func (w *WebArguments) UnmarshalJSON(data []byte) error {
 
 func (w *WebArguments) setDefaultValues() {
 	if w.MaxPages == 0 {
-		w.MaxPages = webDefaultMaxPages
+		w.MaxPages = WebDefaultMaxPages
 	}
 }
 
@@ -102,11 +102,11 @@ func (w *WebArguments) GetCapability() teetypes.Capability {
 func (w WebArguments) ToWebScraperRequest() teetypes.WebScraperRequest {
 	return teetypes.WebScraperRequest{
 		StartUrls: []teetypes.WebStartURL{
-			{URL: w.URL, Method: webDefaultMethod},
+			{URL: w.URL, Method: WebDefaultMethod},
 		},
 		MaxCrawlDepth:        w.MaxDepth,
 		MaxCrawlPages:        w.MaxPages,
-		RespectRobotsTxtFile: webDefaultRespectRobotsTxtFile,
-		SaveMarkdown:         webDefaultSaveMarkdown,
+		RespectRobotsTxtFile: WebDefaultRespectRobotsTxtFile,
+		SaveMarkdown:         WebDefaultSaveMarkdown,
 	}
 }
