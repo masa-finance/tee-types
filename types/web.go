@@ -46,9 +46,10 @@ type WebMetadata struct {
 
 // WebScraperResult represents the complete result from web scraping a single page
 type WebScraperResult struct {
-	URL      string       `json:"url"`
-	Crawl    WebCrawlInfo `json:"crawl"`
-	Metadata WebMetadata  `json:"metadata"`
-	Text     string       `json:"text"`
-	Markdown string       `json:"markdown"`
+	URL         string       `json:"url"`
+	Crawl       WebCrawlInfo `json:"crawl"`
+	Metadata    WebMetadata  `json:"metadata"`
+	Text        string       `json:"text"`
+	Markdown    string       `json:"markdown"`
+	LLMResponse string       `json:"llmresponse,omitempty"` // populated by LLM processor
 }
