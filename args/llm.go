@@ -15,10 +15,10 @@ var (
 )
 
 const (
-	llmDefaultMaxTokens       = 300
-	llmDefaultTemperature     = "0.1"
-	llmDefaultMultipleColumns = false
-	llmDefaultModel           = "gemini-1.5-flash-8b"
+	LLMDefaultMaxTokens       = 300
+	LLMDefaultTemperature     = "0.1"
+	LLMDefaultMultipleColumns = false
+	LLMDefaultModel           = "gemini-1.5-flash-8b"
 )
 
 type LLMProcessorArguments struct {
@@ -50,10 +50,10 @@ func (l *LLMProcessorArguments) UnmarshalJSON(data []byte) error {
 
 func (l *LLMProcessorArguments) setDefaultValues() {
 	if l.MaxTokens == 0 {
-		l.MaxTokens = llmDefaultMaxTokens
+		l.MaxTokens = LLMDefaultMaxTokens
 	}
 	if l.Temperature == "" {
-		l.Temperature = llmDefaultTemperature
+		l.Temperature = LLMDefaultTemperature
 	}
 }
 
@@ -85,12 +85,13 @@ func (l *LLMProcessorArguments) GetCapability() teetypes.Capability {
 }
 
 func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequest {
+
 	return teetypes.LLMProcessorRequest{
 		InputDatasetId:  l.DatasetId,
 		Prompt:          l.Prompt,
 		MaxTokens:       l.MaxTokens,
 		Temperature:     l.Temperature,
-		MultipleColumns: llmDefaultMultipleColumns, // overrides default in actor API
-		Model:           llmDefaultModel,           // overrides default in actor API
+		MultipleColumns: LLMDefaultMultipleColumns, // overrides default in actor API
+		Model:           LLMDefaultModel,           // overrides default in actor API
 	}
 }
