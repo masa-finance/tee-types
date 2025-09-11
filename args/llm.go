@@ -39,7 +39,7 @@ func (l *LLMProcessorArguments) UnmarshalJSON(data []byte) error {
 	}
 
 	if err := json.Unmarshal(data, aux); err != nil {
-		return fmt.Errorf("failed to unmarshal web arguments: %w", err)
+		return fmt.Errorf("failed to unmarshal llm arguments: %w", err)
 	}
 
 	l.setDefaultValues()
@@ -70,7 +70,6 @@ func (l *LLMProcessorArguments) Validate() error {
 }
 
 func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequest {
-
 	return teetypes.LLMProcessorRequest{
 		InputDatasetId:  l.DatasetId,
 		Prompt:          l.Prompt,
