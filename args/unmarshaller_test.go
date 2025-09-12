@@ -14,15 +14,13 @@ var _ = Describe("Unmarshaller", func() {
 			It("should unmarshal the arguments correctly", func() {
 				argsMap := map[string]any{
 					"url":       "https://example.com",
-					"selector":  "h1",
 					"max_depth": 2,
 				}
 				jobArgs, err := args.UnmarshalJobArguments(types.WebJob, argsMap)
 				Expect(err).ToNot(HaveOccurred())
-				webArgs, ok := jobArgs.(*args.WebSearchArguments)
+				webArgs, ok := jobArgs.(*args.WebArguments)
 				Expect(ok).To(BeTrue())
 				Expect(webArgs.URL).To(Equal("https://example.com"))
-				Expect(webArgs.Selector).To(Equal("h1"))
 				Expect(webArgs.MaxDepth).To(Equal(2))
 			})
 		})

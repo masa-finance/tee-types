@@ -10,50 +10,7 @@ import (
 
 // JobArguments defines the interface that all job arguments must implement
 type JobArguments interface {
-	Validate() error
 	GetCapability() types.Capability
-}
-
-// TwitterJobArguments extends JobArguments for Twitter-specific methods
-type TwitterJobArguments interface {
-	JobArguments
-	ValidateForJobType(jobType types.JobType) error
-	IsSingleTweetOperation() bool
-	IsMultipleTweetOperation() bool
-	IsSingleProfileOperation() bool
-	IsMultipleProfileOperation() bool
-	IsSingleSpaceOperation() bool
-	IsTrendsOperation() bool
-}
-
-// WebJobArguments extends JobArguments for Web-specific methods
-type WebJobArguments interface {
-	JobArguments
-	ValidateForJobType(jobType types.JobType) error
-	IsDeepScrape() bool
-	HasSelector() bool
-	GetEffectiveMaxDepth() int
-}
-
-// TikTokJobArguments extends JobArguments for TikTok-specific methods
-type TikTokJobArguments interface {
-	JobArguments
-	ValidateForJobType(jobType types.JobType) error
-	HasLanguagePreference() bool
-	GetVideoURL() string
-	GetLanguageCode() string
-}
-
-// LinkedInJobArguments extends JobArguments for LinkedIn-specific methods
-type LinkedInJobArguments interface {
-	JobArguments
-	ValidateForJobType(jobType types.JobType) error
-}
-
-// RedditJobArguments extends JobArguments for Reddit-specific methods
-type RedditJobArguments interface {
-	JobArguments
-	ValidateForJobType(jobType types.JobType) error
 }
 
 // UnmarshalJobArguments unmarshals job arguments from a generic map into the appropriate typed struct
@@ -84,8 +41,8 @@ func UnmarshalJobArguments(jobType types.JobType, args map[string]any) (JobArgum
 }
 
 // Helper functions for unmarshaling specific argument types
-func unmarshalWebArguments(args map[string]any) (*WebSearchArguments, error) {
-	webArgs := &WebSearchArguments{}
+func unmarshalWebArguments(args map[string]any) (*WebArguments, error) {
+	webArgs := &WebArguments{}
 	if err := unmarshalToStruct(args, webArgs); err != nil {
 		return nil, fmt.Errorf("failed to unmarshal web job arguments: %w", err)
 	}

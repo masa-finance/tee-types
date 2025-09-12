@@ -1,0 +1,136 @@
+package args_test
+
+import (
+	"encoding/json"
+	"errors"
+
+	. "github.com/onsi/ginkgo/v2"
+	. "github.com/onsi/gomega"
+
+	"github.com/masa-finance/tee-types/args"
+)
+
+var _ = Describe("LLMProcessorArguments", func() {
+	Describe("Marshalling and unmarshalling", func() {
+		It("should set default values", func() {
+			llmArgs := args.LLMProcessorArguments{
+				DatasetId: "ds1",
+				Prompt:    "summarize: ${markdown}",
+			}
+			jsonData, err := json.Marshal(llmArgs)
+			Expect(err).ToNot(HaveOccurred())
+			err = json.Unmarshal([]byte(jsonData), &llmArgs)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(llmArgs.MaxTokens).To(Equal(300))
+			Expect(llmArgs.Temperature).To(Equal("0.1"))
+		})
+
+		It("should override default values", func() {
+			llmArgs := args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				Prompt:      "summarize: ${markdown}",
+				MaxTokens:   123,
+				Temperature: "0.7",
+			}
+			jsonData, err := json.Marshal(llmArgs)
+			Expect(err).ToNot(HaveOccurred())
+			err = json.Unmarshal([]byte(jsonData), &llmArgs)
+			Expect(err).ToNot(HaveOccurred())
+			Expect(llmArgs.MaxTokens).To(Equal(123))
+			Expect(llmArgs.Temperature).To(Equal("0.7"))
+		})
+
+		It("should fail unmarshal when dataset_id is missing", func() {
+			var llmArgs args.LLMProcessorArguments
+			jsonData := []byte(`{"type":"datasetprocessor","prompt":"p"}`)
+			err := json.Unmarshal(jsonData, &llmArgs)
+			Expect(errors.Is(err, args.ErrLLMDatasetIdRequired)).To(BeTrue())
+		})
+
+		It("should fail unmarshal when prompt is missing", func() {
+			var llmArgs args.LLMProcessorArguments
+			jsonData := []byte(`{"type":"datasetprocessor","dataset_id":"ds1"}`)
+			err := json.Unmarshal(jsonData, &llmArgs)
+			Expect(errors.Is(err, args.ErrLLMPromptRequired)).To(BeTrue())
+		})
+	})
+
+	Describe("Validation", func() {
+		It("should succeed with valid arguments", func() {
+			llmArgs := &args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				Prompt:      "p",
+				MaxTokens:   10,
+				Temperature: "0.2",
+			}
+			err := llmArgs.Validate()
+			Expect(err).ToNot(HaveOccurred())
+		})
+
+		It("should fail when dataset_id is missing", func() {
+			llmArgs := &args.LLMProcessorArguments{
+				Prompt:      "p",
+				MaxTokens:   10,
+				Temperature: "0.2",
+			}
+			err := llmArgs.Validate()
+			Expect(errors.Is(err, args.ErrLLMDatasetIdRequired)).To(BeTrue())
+		})
+
+		It("should fail when prompt is missing", func() {
+			llmArgs := &args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				MaxTokens:   10,
+				Temperature: "0.2",
+			}
+			err := llmArgs.Validate()
+			Expect(errors.Is(err, args.ErrLLMPromptRequired)).To(BeTrue())
+		})
+
+		It("should fail when max tokens is negative", func() {
+			llmArgs := &args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				Prompt:      "p",
+				MaxTokens:   -1,
+				Temperature: "0.2",
+			}
+			err := llmArgs.Validate()
+			Expect(errors.Is(err, args.ErrLLMMaxTokensNegative)).To(BeTrue())
+			Expect(err.Error()).To(ContainSubstring("got -1"))
+		})
+	})
+
+	Describe("ToLLMProcessorRequest", func() {
+		It("should map fields and defaults correctly", func() {
+			llmArgs := args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				Prompt:      "p",
+				MaxTokens:   0, // default applied in To*
+				Temperature: "",
+			}
+			req := llmArgs.ToLLMProcessorRequest()
+			Expect(req.InputDatasetId).To(Equal("ds1"))
+			Expect(req.Prompt).To(Equal("p"))
+			Expect(req.MaxTokens).To(Equal(0))
+			Expect(req.Temperature).To(Equal(""))
+			Expect(req.MultipleColumns).To(BeFalse())
+			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
+		})
+
+		It("should map fields correctly when set", func() {
+			llmArgs := args.LLMProcessorArguments{
+				DatasetId:   "ds1",
+				Prompt:      "p",
+				MaxTokens:   42,
+				Temperature: "0.7",
+			}
+			req := llmArgs.ToLLMProcessorRequest()
+			Expect(req.InputDatasetId).To(Equal("ds1"))
+			Expect(req.Prompt).To(Equal("p"))
+			Expect(req.MaxTokens).To(Equal(42))
+			Expect(req.Temperature).To(Equal("0.7"))
+			Expect(req.MultipleColumns).To(BeFalse())
+			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
+		})
+	})
+})
