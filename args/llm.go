@@ -28,7 +28,7 @@ type LLMProcessorArguments struct {
 	Prompt      string `json:"prompt"`
 	MaxTokens   int    `json:"max_tokens"`
 	Temperature string `json:"temperature"`
-	MaxPages    int    `json:"max_pages"`
+	Items       int    `json:"items"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
@@ -57,8 +57,8 @@ func (l *LLMProcessorArguments) setDefaultValues() {
 	if l.Temperature == "" {
 		l.Temperature = LLMDefaultTemperature
 	}
-	if l.MaxPages == 0 {
-		l.MaxPages = LLMDefaultMaxPages
+	if l.Items == 0 {
+		l.Items = LLMDefaultMaxPages
 	}
 }
 
@@ -72,8 +72,8 @@ func (l *LLMProcessorArguments) Validate() error {
 	if l.MaxTokens < 0 {
 		return fmt.Errorf("%w: got %v", ErrLLMMaxTokensNegative, l.MaxTokens)
 	}
-	if l.MaxPages < 1 {
-		return fmt.Errorf("%w: got %v", ErrLLMMaxPagesNegative, l.MaxPages)
+	if l.Items < 1 {
+		return fmt.Errorf("%w: got %v", ErrLLMMaxPagesNegative, l.Items)
 	}
 	return nil
 }
