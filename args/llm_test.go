@@ -62,7 +62,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				Prompt:      "p",
 				MaxTokens:   10,
 				Temperature: "0.2",
-				MaxPages:    1,
+				Items:       1,
 			}
 			err := llmArgs.Validate()
 			Expect(err).ToNot(HaveOccurred())
