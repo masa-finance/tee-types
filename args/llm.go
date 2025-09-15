@@ -12,7 +12,7 @@ var (
 	ErrLLMDatasetIdRequired = errors.New("dataset id is required")
 	ErrLLMPromptRequired    = errors.New("prompt is required")
 	ErrLLMMaxTokensNegative = errors.New("max tokens must be non-negative")
-	ErrLLMMaxPagesNegative  = errors.New("max pages must be non-negative")
+	ErrLLMItemsNegative     = errors.New("items must be non-negative")
 )
 
 const (
@@ -20,7 +20,7 @@ const (
 	LLMDefaultTemperature     = "0.1"
 	LLMDefaultMultipleColumns = false
 	LLMDefaultModel           = "gemini-1.5-flash-8b"
-	LLMDefaultMaxPages        = 1
+	LLMDefaultItems           = 1
 )
 
 type LLMProcessorArguments struct {
@@ -58,7 +58,7 @@ func (l *LLMProcessorArguments) setDefaultValues() {
 		l.Temperature = LLMDefaultTemperature
 	}
 	if l.Items == 0 {
-		l.Items = LLMDefaultMaxPages
+		l.Items = LLMDefaultItems
 	}
 }
 
@@ -73,7 +73,7 @@ func (l *LLMProcessorArguments) Validate() error {
 		return fmt.Errorf("%w: got %v", ErrLLMMaxTokensNegative, l.MaxTokens)
 	}
 	if l.Items < 1 {
-		return fmt.Errorf("%w: got %v", ErrLLMMaxPagesNegative, l.Items)
+		return fmt.Errorf("%w: got %v", ErrLLMItemsNegative, l.Items)
 	}
 	return nil
 }
