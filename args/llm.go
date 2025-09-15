@@ -12,6 +12,7 @@ var (
 	ErrLLMDatasetIdRequired = errors.New("dataset id is required")
 	ErrLLMPromptRequired    = errors.New("prompt is required")
 	ErrLLMMaxTokensNegative = errors.New("max tokens must be non-negative")
+	ErrLLMMaxPagesNegative  = errors.New("max pages must be non-negative")
 )
 
 const (
@@ -19,6 +20,7 @@ const (
 	LLMDefaultTemperature     = "0.1"
 	LLMDefaultMultipleColumns = false
 	LLMDefaultModel           = "gemini-1.5-flash-8b"
+	LLMDefaultMaxPages        = 1
 )
 
 type LLMProcessorArguments struct {
@@ -26,6 +28,7 @@ type LLMProcessorArguments struct {
 	Prompt      string `json:"prompt"`
 	MaxTokens   int    `json:"max_tokens"`
 	Temperature string `json:"temperature"`
+	MaxPages    int    `json:"max_pages"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
@@ -54,6 +57,9 @@ func (l *LLMProcessorArguments) setDefaultValues() {
 	if l.Temperature == "" {
 		l.Temperature = LLMDefaultTemperature
 	}
+	if l.MaxPages == 0 {
+		l.MaxPages = LLMDefaultMaxPages
+	}
 }
 
 func (l *LLMProcessorArguments) Validate() error {
@@ -65,6 +71,9 @@ func (l *LLMProcessorArguments) Validate() error {
 	}
 	if l.MaxTokens < 0 {
 		return fmt.Errorf("%w: got %v", ErrLLMMaxTokensNegative, l.MaxTokens)
+	}
+	if l.MaxPages < 1 {
+		return fmt.Errorf("%w: got %v", ErrLLMMaxPagesNegative, l.MaxPages)
 	}
 	return nil
 }
