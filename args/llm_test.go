@@ -22,7 +22,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(llmArgs.MaxTokens).To(Equal(300))
-			Expect(llmArgs.Temperature).To(Equal("0.1"))
+			Expect(llmArgs.Temperature).To(Equal(0.1))
 		})
 
 		It("should override default values", func() {
@@ -37,7 +37,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
 			Expect(llmArgs.MaxTokens).To(Equal(123))
-			Expect(llmArgs.Temperature).To(Equal("0.7"))
+			Expect(llmArgs.Temperature).To(Equal(0.7))
 		})
 
 		It("should fail unmarshal when dataset_id is missing", func() {
@@ -101,7 +101,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(req.InputDatasetId).To(Equal("ds1"))
 			Expect(req.Prompt).To(Equal("p"))
 			Expect(req.MaxTokens).To(Equal(0))
-			Expect(req.Temperature).To(Equal(""))
+			Expect(req.Temperature).To(Equal(0))
 			Expect(req.MultipleColumns).To(BeFalse())
 			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
 		})
@@ -117,7 +117,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(req.InputDatasetId).To(Equal("ds1"))
 			Expect(req.Prompt).To(Equal("p"))
 			Expect(req.MaxTokens).To(Equal(42))
-			Expect(req.Temperature).To(Equal("0.7"))
+			Expect(req.Temperature).To(Equal(0.7))
 			Expect(req.MultipleColumns).To(BeFalse())
 			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
 		})
