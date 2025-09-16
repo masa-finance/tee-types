@@ -87,18 +87,6 @@ var _ = Describe("LLMProcessorArguments", func() {
 			err := llmArgs.Validate()
 			Expect(errors.Is(err, args.ErrLLMPromptRequired)).To(BeTrue())
 		})
-
-		It("should fail when max tokens is negative", func() {
-			llmArgs := &args.LLMProcessorArguments{
-				DatasetId:   "ds1",
-				Prompt:      "p",
-				MaxTokens:   -1,
-				Temperature: "0.2",
-			}
-			err := llmArgs.Validate()
-			Expect(errors.Is(err, args.ErrLLMMaxTokensNegative)).To(BeTrue())
-			Expect(err.Error()).To(ContainSubstring("got -1"))
-		})
 	})
 
 	Describe("ToLLMProcessorRequest", func() {

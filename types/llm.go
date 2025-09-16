@@ -7,7 +7,7 @@ type LLMProcessorRequest struct {
 	MultipleColumns   bool   `json:"multipleColumns"`
 	Prompt            string `json:"prompt"` // example: summarize the content of this webpage: ${markdown}
 	Temperature       string `json:"temperature"`
-	MaxTokens         int    `json:"maxTokens"`
+	MaxTokens         uint   `json:"maxTokens"`
 }
 
 type LLMProcessorResult struct {

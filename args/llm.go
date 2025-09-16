@@ -11,8 +11,6 @@ import (
 var (
 	ErrLLMDatasetIdRequired = errors.New("dataset id is required")
 	ErrLLMPromptRequired    = errors.New("prompt is required")
-	ErrLLMMaxTokensNegative = errors.New("max tokens must be non-negative")
-	ErrLLMItemsNegative     = errors.New("items must be non-negative")
 )
 
 const (
@@ -26,9 +24,9 @@ const (
 type LLMProcessorArguments struct {
 	DatasetId   string `json:"dataset_id"`
 	Prompt      string `json:"prompt"`
-	MaxTokens   int    `json:"max_tokens"`
+	MaxTokens   uint   `json:"max_tokens"`
 	Temperature string `json:"temperature"`
-	Items       int    `json:"items"`
+	Items       uint   `json:"items"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
@@ -51,11 +49,11 @@ func (l *LLMProcessorArguments) UnmarshalJSON(data []byte) error {
 }
 
 func (l *LLMProcessorArguments) setDefaultValues() {
-	if l.MaxTokens == 0 {
-		l.MaxTokens = LLMDefaultMaxTokens
-	}
 	if l.Temperature == "" {
 		l.Temperature = LLMDefaultTemperature
+	}
+	if l.MaxTokens == 0 {
+		l.MaxTokens = LLMDefaultMaxTokens
 	}
 	if l.Items == 0 {
 		l.Items = LLMDefaultItems
@@ -68,12 +66,6 @@ func (l *LLMProcessorArguments) Validate() error {
 	}
 	if l.Prompt == "" {
 		return ErrLLMPromptRequired
-	}
-	if l.MaxTokens < 0 {
-		return fmt.Errorf("%w: got %v", ErrLLMMaxTokensNegative, l.MaxTokens)
-	}
-	if l.Items < 1 {
-		return fmt.Errorf("%w: got %v", ErrLLMItemsNegative, l.Items)
 	}
 	return nil
 }
