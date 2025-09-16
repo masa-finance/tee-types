@@ -21,8 +21,9 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(err).ToNot(HaveOccurred())
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
-			Expect(llmArgs.MaxTokens).To(Equal(300))
+			Expect(llmArgs.MaxTokens).To(Equal(uint(300)))
 			Expect(llmArgs.Temperature).To(Equal(0.1))
+			Expect(llmArgs.Items).To(Equal(uint(1)))
 		})
 
 		It("should override default values", func() {
@@ -31,12 +32,14 @@ var _ = Describe("LLMProcessorArguments", func() {
 				Prompt:      "summarize: ${markdown}",
 				MaxTokens:   123,
 				Temperature: 0.7,
+				Items:       3,
 			}
 			jsonData, err := json.Marshal(llmArgs)
 			Expect(err).ToNot(HaveOccurred())
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
-			Expect(llmArgs.MaxTokens).To(Equal(123))
+			Expect(llmArgs.MaxTokens).To(Equal(uint(123)))
+			Expect(llmArgs.Items).To(Equal(uint(3)))
 			Expect(llmArgs.Temperature).To(Equal(0.7))
 		})
 
@@ -100,7 +103,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			req := llmArgs.ToLLMProcessorRequest()
 			Expect(req.InputDatasetId).To(Equal("ds1"))
 			Expect(req.Prompt).To(Equal("p"))
-			Expect(req.MaxTokens).To(Equal(0))
+			Expect(req.MaxTokens).To(Equal(uint(0)))
 			Expect(req.Temperature).To(Equal(0))
 			Expect(req.MultipleColumns).To(BeFalse())
 			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
@@ -116,7 +119,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			req := llmArgs.ToLLMProcessorRequest()
 			Expect(req.InputDatasetId).To(Equal("ds1"))
 			Expect(req.Prompt).To(Equal("p"))
-			Expect(req.MaxTokens).To(Equal(42))
+			Expect(req.MaxTokens).To(Equal(uint(42)))
 			Expect(req.Temperature).To(Equal(0.7))
 			Expect(req.MultipleColumns).To(BeFalse())
 			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
