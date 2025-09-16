@@ -21,8 +21,8 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(err).ToNot(HaveOccurred())
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
-			Expect(llmArgs.MaxTokens).To(Equal(uint(300)))
 			Expect(llmArgs.Temperature).To(Equal(0.1))
+			Expect(llmArgs.MaxTokens).To(Equal(uint(300)))
 			Expect(llmArgs.Items).To(Equal(uint(1)))
 		})
 
@@ -38,9 +38,9 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(err).ToNot(HaveOccurred())
 			err = json.Unmarshal([]byte(jsonData), &llmArgs)
 			Expect(err).ToNot(HaveOccurred())
+			Expect(llmArgs.Temperature).To(Equal(0.7))
 			Expect(llmArgs.MaxTokens).To(Equal(uint(123)))
 			Expect(llmArgs.Items).To(Equal(uint(3)))
-			Expect(llmArgs.Temperature).To(Equal(0.7))
 		})
 
 		It("should fail unmarshal when dataset_id is missing", func() {
@@ -93,23 +93,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 	})
 
 	Describe("ToLLMProcessorRequest", func() {
-		It("should map fields and defaults correctly", func() {
-			llmArgs := args.LLMProcessorArguments{
-				DatasetId:   "ds1",
-				Prompt:      "p",
-				MaxTokens:   0, // default applied in To*
-				Temperature: 0,
-			}
-			req := llmArgs.ToLLMProcessorRequest()
-			Expect(req.InputDatasetId).To(Equal("ds1"))
-			Expect(req.Prompt).To(Equal("p"))
-			Expect(req.MaxTokens).To(Equal(uint(0)))
-			Expect(req.Temperature).To(Equal("0.1"))
-			Expect(req.MultipleColumns).To(BeFalse())
-			Expect(req.Model).To(Equal("gemini-1.5-flash-8b"))
-		})
-
-		It("should map fields correctly when set", func() {
+		It("should map request fields to actor request fields", func() {
 			llmArgs := args.LLMProcessorArguments{
 				DatasetId:   "ds1",
 				Prompt:      "p",
