@@ -30,7 +30,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				DatasetId:   "ds1",
 				Prompt:      "summarize: ${markdown}",
 				MaxTokens:   123,
-				Temperature: "0.7",
+				Temperature: 0.7,
 			}
 			jsonData, err := json.Marshal(llmArgs)
 			Expect(err).ToNot(HaveOccurred())
@@ -61,7 +61,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   10,
-				Temperature: "0.2",
+				Temperature: 0.2,
 				Items:       1,
 			}
 			err := llmArgs.Validate()
@@ -72,7 +72,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			llmArgs := &args.LLMProcessorArguments{
 				Prompt:      "p",
 				MaxTokens:   10,
-				Temperature: "0.2",
+				Temperature: 0.2,
 			}
 			err := llmArgs.Validate()
 			Expect(errors.Is(err, args.ErrLLMDatasetIdRequired)).To(BeTrue())
@@ -82,7 +82,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			llmArgs := &args.LLMProcessorArguments{
 				DatasetId:   "ds1",
 				MaxTokens:   10,
-				Temperature: "0.2",
+				Temperature: 0.2,
 			}
 			err := llmArgs.Validate()
 			Expect(errors.Is(err, args.ErrLLMPromptRequired)).To(BeTrue())
@@ -95,7 +95,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   0, // default applied in To*
-				Temperature: "",
+				Temperature: 0,
 			}
 			req := llmArgs.ToLLMProcessorRequest()
 			Expect(req.InputDatasetId).To(Equal("ds1"))
@@ -111,7 +111,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				DatasetId:   "ds1",
 				Prompt:      "p",
 				MaxTokens:   42,
-				Temperature: "0.7",
+				Temperature: 0.7,
 			}
 			req := llmArgs.ToLLMProcessorRequest()
 			Expect(req.InputDatasetId).To(Equal("ds1"))

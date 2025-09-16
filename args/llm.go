@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strconv"
 
 	teetypes "github.com/masa-finance/tee-types/types"
 )
@@ -14,19 +15,19 @@ var (
 )
 
 const (
-	LLMDefaultMaxTokens       = 300
-	LLMDefaultTemperature     = "0.1"
-	LLMDefaultMultipleColumns = false
-	LLMDefaultModel           = "gemini-1.5-flash-8b"
-	LLMDefaultItems           = 1
+	LLMDefaultMaxTokens       uint    = 300
+	LLMDefaultTemperature     float64 = 0.1
+	LLMDefaultMultipleColumns bool    = false
+	LLMDefaultModel           string  = "gemini-1.5-flash-8b"
+	LLMDefaultItems           uint    = 1
 )
 
 type LLMProcessorArguments struct {
-	DatasetId   string `json:"dataset_id"`
-	Prompt      string `json:"prompt"`
-	MaxTokens   uint   `json:"max_tokens"`
-	Temperature string `json:"temperature"`
-	Items       uint   `json:"items"`
+	DatasetId   string  `json:"dataset_id"`
+	Prompt      string  `json:"prompt"`
+	MaxTokens   uint    `json:"max_tokens"`
+	Temperature float64 `json:"temperature"`
+	Items       uint    `json:"items"`
 }
 
 // UnmarshalJSON implements custom JSON unmarshaling with validation
@@ -49,7 +50,7 @@ func (l *LLMProcessorArguments) UnmarshalJSON(data []byte) error {
 }
 
 func (l *LLMProcessorArguments) setDefaultValues() {
-	if l.Temperature == "" {
+	if l.Temperature == 0 {
 		l.Temperature = LLMDefaultTemperature
 	}
 	if l.MaxTokens == 0 {
@@ -75,7 +76,7 @@ func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequ
 		InputDatasetId:  l.DatasetId,
 		Prompt:          l.Prompt,
 		MaxTokens:       l.MaxTokens,
-		Temperature:     l.Temperature,
+		Temperature:     strconv.FormatFloat(l.Temperature, 'f', -1, 64),
 		MultipleColumns: LLMDefaultMultipleColumns, // overrides default in actor API
 		Model:           LLMDefaultModel,           // overrides default in actor API
 	}
