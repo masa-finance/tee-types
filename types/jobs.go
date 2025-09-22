@@ -1,6 +1,7 @@
 package types
 
 import (
+	"encoding/json"
 	"fmt"
 	"slices"
 	"time"
@@ -11,6 +12,14 @@ import (
 type JobType string
 
 type JobArguments map[string]interface{}
+
+func (ja JobArguments) Unmarshal(i interface{}) error {
+	dat, err := json.Marshal(ja)
+	if err != nil {
+		return err
+	}
+	return json.Unmarshal(dat, i)
+}
 
 type Job struct {
 	Type         JobType       `json:"type"`
