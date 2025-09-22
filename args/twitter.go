@@ -12,6 +12,7 @@ import (
 var (
 	ErrTwitterCountNegative      = errors.New("count must be non-negative")
 	ErrTwitterCountTooLarge      = errors.New("count must be less than or equal to 1000")
+	ErrTwitterMaxResultsTooLarge = errors.New("max_results must be less than or equal to 1000")
 	ErrTwitterMaxResultsNegative = errors.New("max_results must be non-negative")
 )
 
@@ -49,17 +50,17 @@ func (t *TwitterSearchArguments) UnmarshalJSON(data []byte) error {
 // Validate validates the Twitter arguments (general validation)
 func (t *TwitterSearchArguments) Validate() error {
 	// note, query is not required for all capabilities
-
 	if t.Count < 0 {
 		return fmt.Errorf("%w, got: %d", ErrTwitterCountNegative, t.Count)
 	}
-
 	if t.Count > 1000 {
 		return fmt.Errorf("%w, got: %d", ErrTwitterCountTooLarge, t.Count)
 	}
-
 	if t.MaxResults < 0 {
 		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsNegative, t.MaxResults)
+	}
+	if t.MaxResults > 1000 {
+		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsTooLarge, t.Count)
 	}
 
 	return nil
