@@ -2,10 +2,17 @@ package args
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 
 	teetypes "github.com/masa-finance/tee-types/types"
+)
+
+var (
+	ErrTwitterCountNegative      = errors.New("count must be non-negative")
+	ErrTwitterCountTooLarge      = errors.New("count must be less than or equal to 1000")
+	ErrTwitterMaxResultsNegative = errors.New("max_results must be non-negative")
 )
 
 // TwitterSearchArguments defines args for Twitter searches
@@ -44,11 +51,15 @@ func (t *TwitterSearchArguments) Validate() error {
 	// note, query is not required for all capabilities
 
 	if t.Count < 0 {
-		return fmt.Errorf("count must be non-negative, got: %d", t.Count)
+		return fmt.Errorf("%w, got: %d", ErrTwitterCountNegative, t.Count)
+	}
+
+	if t.Count > 1000 {
+		return fmt.Errorf("%w, got: %d", ErrTwitterCountTooLarge, t.Count)
 	}
 
 	if t.MaxResults < 0 {
-		return fmt.Errorf("max_results must be non-negative, got: %d", t.MaxResults)
+		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsNegative, t.MaxResults)
 	}
 
 	return nil
