@@ -13,12 +13,12 @@ type JobType string
 
 type JobArguments map[string]interface{}
 
-func (ja JobArguments) Unmarshal(i interface{}) error {
-	dat, err := json.Marshal(ja)
+func (j JobArguments) Unmarshal(i interface{}) error {
+	d, err := json.Marshal(j)
 	if err != nil {
 		return err
 	}
-	return json.Unmarshal(dat, i)
+	return json.Unmarshal(d, i)
 }
 
 type Job struct {
