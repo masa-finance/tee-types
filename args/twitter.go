@@ -16,6 +16,10 @@ var (
 	ErrTwitterMaxResultsNegative = errors.New("max_results must be non-negative")
 )
 
+const (
+	TwitterMaxResults = 1000
+)
+
 // TwitterSearchArguments defines args for Twitter searches
 type TwitterSearchArguments struct {
 	QueryType  string `json:"type"`  // Optional, type of search
@@ -53,13 +57,13 @@ func (t *TwitterSearchArguments) Validate() error {
 	if t.Count < 0 {
 		return fmt.Errorf("%w, got: %d", ErrTwitterCountNegative, t.Count)
 	}
-	if t.Count > 1000 {
+	if t.Count > TwitterMaxResults {
 		return fmt.Errorf("%w, got: %d", ErrTwitterCountTooLarge, t.Count)
 	}
 	if t.MaxResults < 0 {
 		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsNegative, t.MaxResults)
 	}
-	if t.MaxResults > 1000 {
+	if t.MaxResults > TwitterMaxResults {
 		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsTooLarge, t.Count)
 	}
 
