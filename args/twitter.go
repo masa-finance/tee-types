@@ -64,7 +64,7 @@ func (t *TwitterSearchArguments) Validate() error {
 		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsNegative, t.MaxResults)
 	}
 	if t.MaxResults > TwitterMaxResults {
-		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsTooLarge, t.Count)
+		return fmt.Errorf("%w, got: %d", ErrTwitterMaxResultsTooLarge, t.MaxResults)
 	}
 
 	return nil
