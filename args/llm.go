@@ -75,7 +75,7 @@ func (l *LLMProcessorArguments) Validate() error {
 }
 
 func (l LLMProcessorArguments) ToLLMProcessorRequest(model string) (teetypes.LLMProcessorRequest, error) {
-	if !SupportedModels[model] {
+	if _, ok := SupportedModels[model]; !ok {
 		return teetypes.LLMProcessorRequest{}, fmt.Errorf("model %s is not supported", model)
 	}
 
