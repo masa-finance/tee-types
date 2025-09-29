@@ -100,7 +100,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 				MaxTokens:   42,
 				Temperature: 0.7,
 			}
-			req, err := llmArgs.ToLLMProcessorRequest("gemini-1.5-flash-8b")
+			req, err := llmArgs.ToLLMProcessorRequest("gemini-1.5-flash-8b", "api-key")
 			Expect(err).ToNot(HaveOccurred())
 			Expect(req.InputDatasetId).To(Equal("ds1"))
 			Expect(req.Prompt).To(Equal("p"))

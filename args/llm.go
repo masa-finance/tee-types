@@ -74,17 +74,21 @@ func (l *LLMProcessorArguments) Validate() error {
 	return nil
 }
 
-func (l LLMProcessorArguments) ToLLMProcessorRequest(model string) (teetypes.LLMProcessorRequest, error) {
+func (l LLMProcessorArguments) ToLLMProcessorRequest(model string, key string) (teetypes.LLMProcessorRequest, error) {
 	if _, ok := SupportedModels[model]; !ok {
 		return teetypes.LLMProcessorRequest{}, fmt.Errorf("model %s is not supported", model)
 	}
+	if key == "" {
+		return teetypes.LLMProcessorRequest{}, fmt.Errorf("key is required")
+	}
 
 	return teetypes.LLMProcessorRequest{
-		InputDatasetId:  l.DatasetId,
-		Prompt:          l.Prompt,
-		MaxTokens:       l.MaxTokens,
-		Temperature:     strconv.FormatFloat(l.Temperature, 'f', -1, 64),
-		MultipleColumns: LLMDefaultMultipleColumns, // overrides default in actor API
-		Model:           model,                     // overrides default in actor API
+		InputDatasetId:    l.DatasetId,
+		LLMProviderApiKey: key,
+		Prompt:            l.Prompt,
+		MaxTokens:         l.MaxTokens,
+		Temperature:       strconv.FormatFloat(l.Temperature, 'f', -1, 64),
+		MultipleColumns:   LLMDefaultMultipleColumns, // overrides default in actor API
+		Model:             model,                     // overrides default in actor API
 	}, nil
 }
