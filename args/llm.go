@@ -18,10 +18,12 @@ const (
 	LLMDefaultMaxTokens       uint    = 300
 	LLMDefaultTemperature     float64 = 0.1
 	LLMDefaultMultipleColumns bool    = false
-	// LLMDefaultModel           string  = "gemini-1.5-flash-8b"
-	LLMDefaultModel string = "gemini-1.5-flash"
-	LLMDefaultItems uint   = 1
+	LLMDefaultGeminiModel     string  = "gemini-1.5-flash-8b"
+	LLMDefaultClaudeModel     string  = "claude-3-5-haiku-latest"
+	LLMDefaultItems           uint    = 1
 )
+
+var SupportedModels = map[string]bool{LLMDefaultGeminiModel: true, LLMDefaultClaudeModel: true}
 
 type LLMProcessorArguments struct {
 	DatasetId   string  `json:"dataset_id"`
@@ -72,13 +74,17 @@ func (l *LLMProcessorArguments) Validate() error {
 	return nil
 }
 
-func (l LLMProcessorArguments) ToLLMProcessorRequest() teetypes.LLMProcessorRequest {
+func (l LLMProcessorArguments) ToLLMProcessorRequest(model string) (teetypes.LLMProcessorRequest, error) {
+	if !SupportedModels[model] {
+		return teetypes.LLMProcessorRequest{}, fmt.Errorf("model %s is not supported", model)
+	}
+
 	return teetypes.LLMProcessorRequest{
 		InputDatasetId:  l.DatasetId,
 		Prompt:          l.Prompt,
 		MaxTokens:       l.MaxTokens,
 		Temperature:     strconv.FormatFloat(l.Temperature, 'f', -1, 64),
 		MultipleColumns: LLMDefaultMultipleColumns, // overrides default in actor API
-		Model:           LLMDefaultModel,           // overrides default in actor API
-	}
+		Model:           model,                     // overrides default in actor API
+	}, nil
 }
