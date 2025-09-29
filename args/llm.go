@@ -18,8 +18,9 @@ const (
 	LLMDefaultMaxTokens       uint    = 300
 	LLMDefaultTemperature     float64 = 0.1
 	LLMDefaultMultipleColumns bool    = false
-	LLMDefaultModel           string  = "gemini-1.5-flash-8b"
-	LLMDefaultItems           uint    = 1
+	// LLMDefaultModel           string  = "gemini-1.5-flash-8b"
+	LLMDefaultModel string = "gemini-1.5-flash"
+	LLMDefaultItems uint   = 1
 )
 
 type LLMProcessorArguments struct {
