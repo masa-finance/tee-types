@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strconv"
 
+	"github.com/masa-finance/tee-types/pkg/util"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
 
@@ -23,7 +24,7 @@ const (
 	LLMDefaultItems           uint    = 1
 )
 
-var SupportedModels = map[string]bool{LLMDefaultGeminiModel: true, LLMDefaultClaudeModel: true}
+var SupportedModels = util.NewSet(LLMDefaultGeminiModel, LLMDefaultClaudeModel)
 
 type LLMProcessorArguments struct {
 	DatasetId   string  `json:"dataset_id"`
@@ -75,7 +76,7 @@ func (l *LLMProcessorArguments) Validate() error {
 }
 
 func (l LLMProcessorArguments) ToLLMProcessorRequest(model string, key string) (teetypes.LLMProcessorRequest, error) {
-	if _, ok := SupportedModels[model]; !ok {
+	if !SupportedModels.Contains(model) {
 		return teetypes.LLMProcessorRequest{}, fmt.Errorf("model %s is not supported", model)
 	}
 	if key == "" {
