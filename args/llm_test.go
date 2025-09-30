@@ -108,6 +108,7 @@ var _ = Describe("LLMProcessorArguments", func() {
 			Expect(req.Temperature).To(Equal("0.7"))
 			Expect(req.MultipleColumns).To(BeFalse())
 			Expect(req.Model).To(Equal(args.LLMDefaultGeminiModel))
+			Expect(req.LLMProviderApiKey).To(Equal("api-key"))
 		})
 	})
 })
