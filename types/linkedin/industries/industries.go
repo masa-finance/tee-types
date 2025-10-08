@@ -491,7 +491,7 @@ type IndustriesConfig struct {
 	BookAndPeriodicalPublishing             Id
 	NewspaperPublishing                     Id
 	PeriodicalPublishing                    Id
-	EntertainmentProvIders                  Id
+	EntertainmentProviders                  Id
 	ArtistsAndWriters                       Id
 	Musicians                               Id
 
