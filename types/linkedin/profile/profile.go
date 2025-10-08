@@ -16,7 +16,7 @@ const (
 
 var AllScraperModes = util.NewSet(ScraperModeShort, ScraperModeFull, ScraperModeFullEmail)
 
-// Profile represents a complete  profile response
+// Profile represents a complete profile response
 type Profile struct {
 	ID                      string            `json:"id"`
 	PublicIdentifier        string            `json:"publicIdentifier"`
