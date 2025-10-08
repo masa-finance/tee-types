@@ -485,7 +485,7 @@ type IndustriesConfig struct {
 	TechnologyInformationAndMedia           Id
 	BroadcastMediaProductionAndDistribution Id
 	RadioAndTelevisionBroadcasting          Id
-	MoviesVIdeosAndSound                    Id
+	MoviesVideosAndSound                    Id
 	MediaProduction                         Id
 	SoundRecording                          Id
 	BookAndPeriodicalPublishing             Id
