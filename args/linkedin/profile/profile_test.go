@@ -198,12 +198,12 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 
 		It("should fail with invalid job type", func() {
 			args := &profile.Arguments{
-				QueryType:   types.CapSearchByProfile,
+				QueryType:   types.CapSearchByQuery,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
 				MaxItems:    10,
 			}
-			err := args.ValidateForJobType(types.TwitterJob)
+			err := args.ValidateForJobType(types.LinkedInJob)
 			Expect(err).To(HaveOccurred())
 		})
 
