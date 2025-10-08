@@ -663,7 +663,7 @@ var Industries = IndustriesConfig{
 	TechnologyInformationAndMedia:           TechnologyInformationAndMedia,
 	BroadcastMediaProductionAndDistribution: BroadcastMediaProductionAndDistribution,
 	RadioAndTelevisionBroadcasting:          RadioAndTelevisionBroadcasting,
-	MoviesVIdeosAndSound:                    MoviesVIdeosAndSound,
+	MoviesVideosAndSound:                    MoviesVideosAndSound,
 	MediaProduction:                         MediaProduction,
 	SoundRecording:                          SoundRecording,
 	BookAndPeriodicalPublishing:             BookAndPeriodicalPublishing,
