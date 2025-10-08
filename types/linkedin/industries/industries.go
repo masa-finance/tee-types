@@ -130,7 +130,7 @@ const (
 	TechnologyInformationAndMedia           Id = "1594"
 	BroadcastMediaProductionAndDistribution Id = "36"
 	RadioAndTelevisionBroadcasting          Id = "1633"
-	MoviesVIdeosAndSound                    Id = "35"
+	MoviesVideosAndSound                    Id = "35"
 	MediaProduction                         Id = "126"
 	SoundRecording                          Id = "1623"
 	BookAndPeriodicalPublishing             Id = "82"
