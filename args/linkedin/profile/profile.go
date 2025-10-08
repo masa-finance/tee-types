@@ -34,21 +34,21 @@ type Arguments struct {
 	ScraperMode           profile.ScraperMode `json:"scraperMode"`
 	Query                 string              `json:"searchQuery"`
 	MaxItems              uint                `json:"maxItems"`
-	Locations             []string            `json:"locations"`
+	Locations             []string            `json:"locations,omitempty"`
 	CurrentCompanies      []string            `json:"currentCompanies"`
-	PastCompanies         []string            `json:"pastCompanies"`
-	CurrentJobTitles      []string            `json:"currentJobTitles"`
-	PastJobTitles         []string            `json:"pastJobTitles"`
-	Schools               []string            `json:"schools"`
-	YearsOfExperience     []experiences.Id    `json:"yearsOfExperienceIds"`
-	YearsAtCurrentCompany []experiences.Id    `json:"yearsAtCurrentCompanyIds"`
-	SeniorityLevels       []seniorities.Id    `json:"seniorityLevelIds"`
-	Functions             []functions.Id      `json:"functionIds"`
-	Industries            []industries.Id     `json:"industryIds"`
-	FirstNames            []string            `json:"firstNames"`
-	LastNames             []string            `json:"lastNames"`
-	RecentlyChangedJobs   bool                `json:"recentlyChangedJobs"`
-	StartPage             uint                `json:"startPage"`
+	PastCompanies         []string            `json:"pastCompanies,omitempty"`
+	CurrentJobTitles      []string            `json:"currentJobTitles,omitempty"`
+	PastJobTitles         []string            `json:"pastJobTitles,omitempty"`
+	Schools               []string            `json:"schools,omitempty"`
+	YearsOfExperience     []experiences.Id    `json:"yearsOfExperienceIds,omitempty"`
+	YearsAtCurrentCompany []experiences.Id    `json:"yearsAtCurrentCompanyIds,omitempty"`
+	SeniorityLevels       []seniorities.Id    `json:"seniorityLevelIds,omitempty"`
+	Functions             []functions.Id      `json:"functionIds,omitempty"`
+	Industries            []industries.Id     `json:"industryIds,omitempty"`
+	FirstNames            []string            `json:"firstNames,omitempty"`
+	LastNames             []string            `json:"lastNames,omitempty"`
+	RecentlyChangedJobs   bool                `json:"recentlyChangedJobs,omitempty"`
+	StartPage             uint                `json:"startPage,omitempty"`
 }
 
 func (a *Arguments) UnmarshalJSON(data []byte) error {
