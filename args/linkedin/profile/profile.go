@@ -31,7 +31,7 @@ const (
 // Arguments defines args for LinkedIn profile operations
 type Arguments struct {
 	QueryType             teetypes.Capability `json:"type"`
-	ScraperMode           profile.ScraperMode `json:"scraperMode"`
+	ScraperMode           profile.ScraperMode `json:"profileScraperMode"`
 	Query                 string              `json:"searchQuery"`
 	MaxItems              uint                `json:"maxItems"`
 	Locations             []string            `json:"locations,omitempty"`
