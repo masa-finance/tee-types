@@ -97,7 +97,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 			}
 			err := args.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(errors.Is(err, profile.ErrYearsOfExperienceNotSupported)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrExperienceNotSupported)).To(BeTrue())
 
 		})
 
@@ -111,7 +111,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 			}
 			err := args.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(errors.Is(err, profile.ErrYearsOfExperienceNotSupported)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrExperienceNotSupported)).To(BeTrue())
 
 		})
 
@@ -125,7 +125,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 			}
 			err := args.Validate()
 			Expect(err).To(HaveOccurred())
-			Expect(errors.Is(err, profile.ErrSeniorityLevelNotSupported)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrSeniorityNotSupported)).To(BeTrue())
 		})
 
 		It("should fail with invalid function", func() {

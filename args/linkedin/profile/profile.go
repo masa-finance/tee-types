@@ -14,12 +14,12 @@ import (
 )
 
 var (
-	ErrScraperModeNotSupported       = errors.New("scraper mode not supported")
-	ErrMaxItemsTooLarge              = errors.New("max items must be less than or equal to 100")
-	ErrYearsOfExperienceNotSupported = errors.New("years of experience not supported")
-	ErrSeniorityLevelNotSupported    = errors.New("seniority level not supported")
-	ErrFunctionNotSupported          = errors.New("function not supported")
-	ErrIndustryNotSupported          = errors.New("industry not supported")
+	ErrScraperModeNotSupported = errors.New("scraper mode not supported")
+	ErrMaxItemsTooLarge        = errors.New("max items must be less than or equal to 100")
+	ErrExperienceNotSupported  = errors.New("years of experience not supported")
+	ErrSeniorityNotSupported   = errors.New("seniority level not supported")
+	ErrFunctionNotSupported    = errors.New("function not supported")
+	ErrIndustryNotSupported    = errors.New("industry not supported")
 )
 
 const (
@@ -88,17 +88,17 @@ func (a *Arguments) Validate() error {
 	}
 	for _, yoe := range a.YearsOfExperience {
 		if !experiences.All.Contains(yoe) {
-			errs = append(errs, fmt.Errorf("%w: %v", ErrYearsOfExperienceNotSupported, yoe))
+			errs = append(errs, fmt.Errorf("%w: %v", ErrExperienceNotSupported, yoe))
 		}
 	}
 	for _, yac := range a.YearsAtCurrentCompany {
 		if !experiences.All.Contains(yac) {
-			errs = append(errs, fmt.Errorf("%w: %v", ErrYearsOfExperienceNotSupported, yac))
+			errs = append(errs, fmt.Errorf("%w: %v", ErrExperienceNotSupported, yac))
 		}
 	}
 	for _, sl := range a.SeniorityLevels {
 		if !seniorities.All.Contains(sl) {
-			errs = append(errs, fmt.Errorf("%w: %v", ErrSeniorityLevelNotSupported, sl))
+			errs = append(errs, fmt.Errorf("%w: %v", ErrSeniorityNotSupported, sl))
 		}
 	}
 	for _, f := range a.Functions {
