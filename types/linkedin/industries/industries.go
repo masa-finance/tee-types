@@ -669,7 +669,7 @@ var Industries = IndustriesConfig{
 	BookAndPeriodicalPublishing:             BookAndPeriodicalPublishing,
 	NewspaperPublishing:                     NewspaperPublishing,
 	PeriodicalPublishing:                    PeriodicalPublishing,
-	EntertainmentProvIders:                  EntertainmentProvIders,
+	EntertainmentProviders:                  EntertainmentProviders,
 	ArtistsAndWriters:                       ArtistsAndWriters,
 	Musicians:                               Musicians,
 
