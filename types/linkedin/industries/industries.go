@@ -313,7 +313,7 @@ var All = util.NewSet(
 	BookAndPeriodicalPublishing,
 	NewspaperPublishing,
 	PeriodicalPublishing,
-	EntertainmentProvIders,
+	EntertainmentProviders,
 	ArtistsAndWriters,
 	Musicians,
 
