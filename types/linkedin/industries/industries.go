@@ -136,7 +136,7 @@ const (
 	BookAndPeriodicalPublishing             Id = "82"
 	NewspaperPublishing                     Id = "81"
 	PeriodicalPublishing                    Id = "1600"
-	EntertainmentProvIders                  Id = "28"
+	EntertainmentProviders                  Id = "28"
 	ArtistsAndWriters                       Id = "38"
 	Musicians                               Id = "115"
 
