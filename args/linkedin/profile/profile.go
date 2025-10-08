@@ -35,7 +35,7 @@ type Arguments struct {
 	Query                 string              `json:"searchQuery"`
 	MaxItems              uint                `json:"maxItems"`
 	Locations             []string            `json:"locations,omitempty"`
-	CurrentCompanies      []string            `json:"currentCompanies"`
+	CurrentCompanies      []string            `json:"currentCompanies,omitempty"`
 	PastCompanies         []string            `json:"pastCompanies,omitempty"`
 	CurrentJobTitles      []string            `json:"currentJobTitles,omitempty"`
 	PastJobTitles         []string            `json:"pastJobTitles,omitempty"`
