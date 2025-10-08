@@ -21,3 +21,21 @@ var All = util.NewSet(
 	SixToTenYears,
 	MoreThanTenYears,
 )
+
+type ExperiencesConfig struct {
+	All              util.Set[Id]
+	LessThanAYear    Id
+	OneToTwoYears    Id
+	ThreeToFiveYears Id
+	SixToTenYears    Id
+	MoreThanTenYears Id
+}
+
+var Experiences = ExperiencesConfig{
+	All:              *All,
+	LessThanAYear:    LessThanAYear,
+	OneToTwoYears:    OneToTwoYears,
+	ThreeToFiveYears: ThreeToFiveYears,
+	SixToTenYears:    SixToTenYears,
+	MoreThanTenYears: MoreThanTenYears,
+}

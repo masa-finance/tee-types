@@ -61,3 +61,61 @@ var All = util.NewSet(
 	Research,
 	Sales,
 )
+
+type FunctionsConfig struct {
+	All                           util.Set[Id]
+	Accounting                    Id
+	Administrative                Id
+	ArtsAndDesign                 Id
+	BusinessDevelopment           Id
+	CommunityAndSocialServices    Id
+	Consulting                    Id
+	Education                     Id
+	Engineering                   Id
+	Entrepreneurship              Id
+	Finance                       Id
+	HealthcareServices            Id
+	HumanResources                Id
+	InformationTechnology         Id
+	Legal                         Id
+	Marketing                     Id
+	MediaAndCommunication         Id
+	MilitaryAndProtectiveServices Id
+	Operations                    Id
+	ProductManagement             Id
+	ProgramAndProjectManagement   Id
+	Purchasing                    Id
+	QualityAssurance              Id
+	RealEstate                    Id
+	Research                      Id
+	Sales                         Id
+}
+
+var Functions = FunctionsConfig{
+	All:                           *All,
+	Accounting:                    Accounting,
+	Administrative:                Administrative,
+	ArtsAndDesign:                 ArtsAndDesign,
+	BusinessDevelopment:           BusinessDevelopment,
+	CommunityAndSocialServices:    CommunityAndSocialServices,
+	Consulting:                    Consulting,
+	Education:                     Education,
+	Engineering:                   Engineering,
+	Entrepreneurship:              Entrepreneurship,
+	Finance:                       Finance,
+	HealthcareServices:            HealthcareServices,
+	HumanResources:                HumanResources,
+	InformationTechnology:         InformationTechnology,
+	Legal:                         Legal,
+	Marketing:                     Marketing,
+	MediaAndCommunication:         MediaAndCommunication,
+	MilitaryAndProtectiveServices: MilitaryAndProtectiveServices,
+	Operations:                    Operations,
+	ProductManagement:             ProductManagement,
+	ProgramAndProjectManagement:   ProgramAndProjectManagement,
+	Purchasing:                    Purchasing,
+	QualityAssurance:              QualityAssurance,
+	RealEstate:                    RealEstate,
+	Research:                      Research,
+	Sales:                         Sales,
+}

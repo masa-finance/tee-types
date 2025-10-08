@@ -4,8 +4,12 @@ import (
 	"encoding/json"
 	"fmt"
 
+	linkedin "github.com/masa-finance/tee-types/args/linkedin"
 	teetypes "github.com/masa-finance/tee-types/types"
 )
+
+// LinkedIn is the LinkedIn arguments by type
+var LinkedIn = linkedin.LinkedIn
 
 // QueryTypeArgument provides a minimal structure to extract the QueryType (json "type")
 // This is used across different job types to determine the specific capability being requested

@@ -57,7 +57,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 				YearsOfExperience: []experiences.Id{experiences.ThreeToFiveYears},
 				SeniorityLevels:   []seniorities.Id{seniorities.Senior},
 				Functions:         []functions.Id{functions.Engineering},
-				Industries:        []industries.Id{industries.AccommodationServices},
+				Industries:        []industries.Id{industries.SoftwareDevelopment},
 			}
 			err := args.Validate()
 			Expect(err).ToNot(HaveOccurred())

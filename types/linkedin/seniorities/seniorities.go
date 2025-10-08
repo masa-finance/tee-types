@@ -31,3 +31,31 @@ var All = util.NewSet(
 	CXO,
 	Partner,
 )
+
+type SenioritiesConfig struct {
+	All                util.Set[Id]
+	InTraining         Id
+	EntryLevel         Id
+	Senior             Id
+	Strategic          Id
+	EntryLevelManager  Id
+	ExperiencedManager Id
+	Director           Id
+	VicePresident      Id
+	CXO                Id
+	Partner            Id
+}
+
+var Seniorities = SenioritiesConfig{
+	All:                *All,
+	InTraining:         InTraining,
+	EntryLevel:         EntryLevel,
+	Senior:             Senior,
+	Strategic:          Strategic,
+	EntryLevelManager:  EntryLevelManager,
+	ExperiencedManager: ExperiencedManager,
+	Director:           Director,
+	VicePresident:      VicePresident,
+	CXO:                CXO,
+	Partner:            Partner,
+}
