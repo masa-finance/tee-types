@@ -307,7 +307,7 @@ var All = util.NewSet(
 	TechnologyInformationAndMedia,
 	BroadcastMediaProductionAndDistribution,
 	RadioAndTelevisionBroadcasting,
-	MoviesVIdeosAndSound,
+	MoviesVideosAndSound,
 	MediaProduction,
 	SoundRecording,
 	BookAndPeriodicalPublishing,
