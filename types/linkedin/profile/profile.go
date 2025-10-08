@@ -20,7 +20,7 @@ var AllScraperModes = util.NewSet(ScraperModeShort, ScraperModeFull, ScraperMode
 type Profile struct {
 	ID                      string            `json:"id"`
 	PublicIdentifier        string            `json:"publicIdentifier"`
-	URL                     string            `json:"Url"`
+	URL                     string            `json:"linkedinUrl"`
 	FirstName               string            `json:"firstName"`
 	LastName                string            `json:"lastName"`
 	Headline                string            `json:"headline"`
