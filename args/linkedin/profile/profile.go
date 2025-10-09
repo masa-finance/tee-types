@@ -25,7 +25,7 @@ var (
 const (
 	DefaultMaxItems    = 10
 	DefaultScraperMode = profile.ScraperModeShort
-	MaxItems           = 200 // 2500 on the actor, but we will run over 1MB memory limit on responses
+	MaxItems           = 1000 // 2500 on the actor, but we will run over 1MB memory limit on responses
 )
 
 // Arguments defines args for LinkedIn profile operations

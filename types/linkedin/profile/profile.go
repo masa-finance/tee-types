@@ -19,7 +19,7 @@ var AllScraperModes = util.NewSet(ScraperModeShort, ScraperModeFull, ScraperMode
 // Profile represents a complete profile response
 type Profile struct {
 	ID                string    `json:"id"`
-	PublicIdentifier  string    `json:"publicIdentifier"`
+	PublicIdentifier  string    `json:"publicIdentifier,omitempty"`
 	URL               string    `json:"linkedinUrl"`
 	FirstName         string    `json:"firstName"`
 	LastName          string    `json:"lastName"`
@@ -33,9 +33,9 @@ type Profile struct {
 	PictureUrl        *string   `json:"pictureUrl,omitempty"`
 	Premium           bool      `json:"premium,omitempty"`
 	Influencer        bool      `json:"influencer,omitempty"`
-	Location          Location  `json:"location"`
+	Location          Location  `json:"location,omitempty"`
 	Verified          bool      `json:"verified,omitempty"`
-	RegisteredAt      time.Time `json:"registeredAt"`
+	RegisteredAt      time.Time `json:"registeredAt,omitempty"`
 	TopSkills         *string   `json:"topSkills,omitempty"`
 	ConnectionsCount  int       `json:"connectionsCount,omitempty"`
 	FollowerCount     int       `json:"followerCount,omitempty"`
@@ -70,19 +70,19 @@ type Profile struct {
 // Location represents the location information
 type Location struct {
 	Text        string         `json:"linkedinText"`
-	CountryCode string         `json:"countryCode"`
-	Parsed      ParsedLocation `json:"parsed"`
+	CountryCode string         `json:"countryCode,omitempty"`
+	Parsed      ParsedLocation `json:"parsed,omitempty"`
 }
 
 // ParsedLocation represents the parsed location details
 type ParsedLocation struct {
-	Text        string  `json:"text"`
-	CountryCode string  `json:"countryCode"`
-	RegionCode  *string `json:"regionCode"`
-	Country     string  `json:"country"`
-	CountryFull string  `json:"countryFull"`
-	State       string  `json:"state"`
-	City        string  `json:"city"`
+	Text        string  `json:"text,omitempty"`
+	CountryCode string  `json:"countryCode,omitempty"`
+	RegionCode  *string `json:"regionCode,omitempty"`
+	Country     string  `json:"country,omitempty"`
+	CountryFull string  `json:"countryFull,omitempty"`
+	State       string  `json:"state,omitempty"`
+	City        string  `json:"city,omitempty"`
 }
 
 // CurrentPosition represents current position information
@@ -200,7 +200,7 @@ type MoreProfile struct {
 	FirstName        string  `json:"firstName"`
 	LastName         string  `json:"lastName"`
 	Position         *string `json:"position,omitempty"`
-	PublicIdentifier string  `json:"publicIdentifier"`
+	PublicIdentifier string  `json:"publicIdentifier,omitempty"`
 	URL              string  `json:"linkedinUrl"`
 }
 
