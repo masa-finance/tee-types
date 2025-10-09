@@ -119,95 +119,95 @@ type DateRange struct {
 
 // Education represents educational background
 type Education struct {
-	SchoolName   string    `json:"schoolName"`
-	SchoolURL    string    `json:"schoolUrl"`
-	Degree       string    `json:"degree"`
-	FieldOfStudy *string   `json:"fieldOfStudy"`
-	Skills       []string  `json:"skills"`
-	StartDate    DateRange `json:"startDate"`
-	EndDate      DateRange `json:"endDate"`
-	Period       string    `json:"period"`
+	SchoolName   string    `json:"schoolName,omitempty"`
+	SchoolURL    string    `json:"schoolUrl,omitempty"`
+	Degree       string    `json:"degree,omitempty"`
+	FieldOfStudy *string   `json:"fieldOfStudy,omitempty"`
+	Skills       []string  `json:"skills,omitempty"`
+	StartDate    DateRange `json:"startDate,omitempty"`
+	EndDate      DateRange `json:"endDate,omitempty"`
+	Period       string    `json:"period,omitempty"`
 }
 
 // Certification represents a certification
 type Certification struct {
-	Title        string `json:"title"`
-	IssuedAt     string `json:"issuedAt"`
-	IssuedBy     string `json:"issuedBy"`
-	IssuedByLink string `json:"issuedByLink"`
+	Title        string `json:"title,omitempty"`
+	IssuedAt     string `json:"issuedAt,omitempty"`
+	IssuedBy     string `json:"issuedBy,omitempty"`
+	IssuedByLink string `json:"issuedByLink,omitempty"`
 }
 
 // Project represents a project
 type Project struct {
-	Title       string    `json:"title"`
-	Description string    `json:"description"`
-	Duration    string    `json:"duration"`
-	StartDate   DateRange `json:"startDate"`
-	EndDate     DateRange `json:"endDate"`
+	Title       string    `json:"title,omitempty"`
+	Description string    `json:"description,omitempty"`
+	Duration    string    `json:"duration,omitempty"`
+	StartDate   DateRange `json:"startDate,omitempty"`
+	EndDate     DateRange `json:"endDate,omitempty"`
 }
 
 // Volunteering represents volunteer experience
 type Volunteering struct {
-	Role             string     `json:"role"`
-	Duration         string     `json:"duration"`
-	StartDate        *DateRange `json:"startDate"`
-	EndDate          *DateRange `json:"endDate"`
-	OrganizationName string     `json:"organizationName"`
-	OrganizationURL  *string    `json:"organizationUrl"`
-	Cause            string     `json:"cause"`
+	Role             string     `json:"role,omitempty"`
+	Duration         string     `json:"duration,omitempty"`
+	StartDate        *DateRange `json:"startDate,omitempty"`
+	EndDate          *DateRange `json:"endDate,omitempty"`
+	OrganizationName string     `json:"organizationName,omitempty"`
+	OrganizationURL  *string    `json:"organizationUrl,omitempty"`
+	Cause            string     `json:"cause,omitempty"`
 }
 
 // Skill represents a skill with optional positions and endorsements
 type Skill struct {
-	Name         string   `json:"name"`
+	Name         string   `json:"name,omitempty"`
 	Positions    []string `json:"positions,omitempty"`
 	Endorsements string   `json:"endorsements,omitempty"`
 }
 
 // Course represents a course
 type Course struct {
-	Title              string `json:"title"`
-	AssociatedWith     string `json:"associatedWith"`
-	AssociatedWithLink string `json:"associatedWithLink"`
+	Title              string `json:"title,omitempty"`
+	AssociatedWith     string `json:"associatedWith,omitempty"`
+	AssociatedWithLink string `json:"associatedWithLink,omitempty"`
 }
 
 // Publication represents a publication
 type Publication struct {
-	Title       string `json:"title"`
-	PublishedAt string `json:"publishedAt"`
-	Link        string `json:"link"`
+	Title       string `json:"title,omitempty"`
+	PublishedAt string `json:"publishedAt,omitempty"`
+	Link        string `json:"link,omitempty"`
 }
 
 // HonorAndAward represents an honor or award
 type HonorAndAward struct {
-	Title              string `json:"title"`
-	IssuedBy           string `json:"issuedBy"`
-	IssuedAt           string `json:"issuedAt"`
-	Description        string `json:"description"`
-	AssociatedWith     string `json:"associatedWith"`
-	AssociatedWithLink string `json:"associatedWithLink"`
+	Title              string `json:"title,omitempty"`
+	IssuedBy           string `json:"issuedBy,omitempty"`
+	IssuedAt           string `json:"issuedAt,omitempty"`
+	Description        string `json:"description,omitempty"`
+	AssociatedWith     string `json:"associatedWith,omitempty"`
+	AssociatedWithLink string `json:"associatedWithLink,omitempty"`
 }
 
 // Language represents a language with proficiency level
 type Language struct {
-	Name        string `json:"name"`
+	Name        string `json:"name,omitempty"`
 	Proficiency string `json:"proficiency,omitempty"`
 }
 
 // MoreProfile represents a related profile
 type MoreProfile struct {
-	ID               string  `json:"id"`
-	FirstName        string  `json:"firstName"`
-	LastName         string  `json:"lastName"`
+	ID               string  `json:"id,omitempty"`
+	FirstName        string  `json:"firstName,omitempty"`
+	LastName         string  `json:"lastName,omitempty"`
 	Position         *string `json:"position,omitempty"`
 	PublicIdentifier string  `json:"publicIdentifier,omitempty"`
-	URL              string  `json:"linkedinUrl"`
+	URL              string  `json:"linkedinUrl,omitempty"`
 }
 
 // ShortCurrentPosition represents the short profile current positions array
 type ShortCurrentPosition struct {
 	TenureAtPosition   *Tenure    `json:"tenureAtPosition,omitempty"`
-	CompanyName        string     `json:"companyName"`
+	CompanyName        string     `json:"companyName,omitempty"`
 	Title              *string    `json:"title,omitempty"`
 	Current            *bool      `json:"current,omitempty"`
 	TenureAtCompany    *Tenure    `json:"tenureAtCompany,omitempty"`
@@ -222,8 +222,8 @@ type Tenure struct {
 }
 
 type StartedOn struct {
-	Month int `json:"month"`
-	Year  int `json:"year"`
+	Month int `json:"month,omitempty"`
+	Year  int `json:"year,omitempty"`
 }
 
 // DatePeriod represents a date period with optional start and end parts
@@ -240,8 +240,8 @@ type DateParts struct {
 
 // CompanyWebsite represents company website with validation hint
 type CompanyWebsite struct {
-	URL              string `json:"url"`
-	Domain           string `json:"domain"`
+	URL              string `json:"url,omitempty"`
+	Domain           string `json:"domain,omitempty"`
 	ValidEmailServer *bool  `json:"validEmailServer,omitempty"`
 }
 
@@ -250,12 +250,12 @@ type Recommendation struct {
 	GivenBy     *string `json:"givenBy,omitempty"`
 	GivenByLink *string `json:"givenByLink,omitempty"`
 	GivenAt     *string `json:"givenAt,omitempty"`
-	Description string  `json:"description"`
+	Description string  `json:"description,omitempty"`
 }
 
 // Patent represents a patent entry
 type Patent struct {
-	Title    string  `json:"title"`
+	Title    string  `json:"title,omitempty"`
 	Number   *string `json:"number,omitempty"`
-	IssuedAt string  `json:"issuedAt"`
+	IssuedAt string  `json:"issuedAt,omitempty"`
 }
