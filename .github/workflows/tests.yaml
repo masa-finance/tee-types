@@ -17,7 +17,7 @@ jobs:
       run: sudo snap install golangci-lint --classic
 
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v5
 
     - name: Setup Golang with cache
       uses: magnetikonline/action-golang-cache@v5
@@ -42,7 +42,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v5
 
     - name: Setup Golang with cache
       uses: magnetikonline/action-golang-cache@v5
@@ -58,7 +58,7 @@ jobs:
 
       steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
 
       - name: Verify that merging is OK
         run: |
