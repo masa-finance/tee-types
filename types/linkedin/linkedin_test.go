@@ -16,7 +16,6 @@ var _ = Describe("LinkedIn Types", func() {
 		It("should have all required fields", func() {
 			linkedin := types.LinkedIn
 
-			Expect(linkedin.Profile).ToNot(BeNil())
 			Expect(linkedin.Seniorities).ToNot(BeNil())
 			Expect(linkedin.Experiences).ToNot(BeNil())
 			Expect(linkedin.Functions).ToNot(BeNil())

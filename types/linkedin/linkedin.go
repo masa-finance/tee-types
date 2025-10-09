@@ -8,18 +8,18 @@ import (
 	"github.com/masa-finance/tee-types/types/linkedin/seniorities"
 )
 
-type linkedin struct {
-	Profile     *profile.Profile
-	Seniorities *seniorities.SenioritiesConfig
+type LinkedInConfig struct {
 	Experiences *experiences.ExperiencesConfig
+	Seniorities *seniorities.SenioritiesConfig
 	Functions   *functions.FunctionsConfig
 	Industries  *industries.IndustriesConfig
 }
 
-var LinkedIn = linkedin{
-	Profile:     &profile.Profile{},
-	Seniorities: &seniorities.Seniorities,
+var LinkedIn = LinkedInConfig{
 	Experiences: &experiences.Experiences,
+	Seniorities: &seniorities.Seniorities,
 	Functions:   &functions.Functions,
 	Industries:  &industries.Industries,
 }
+
+type Profile = *profile.Profile
