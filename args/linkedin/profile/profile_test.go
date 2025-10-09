@@ -68,7 +68,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
-				MaxItems:    150,
+				MaxItems:    1500,
 			}
 			err := args.Validate()
 			Expect(err).To(HaveOccurred())
@@ -161,17 +161,17 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 				QueryType:         types.CapSearchByProfile,
 				Query:             "software engineer",
 				ScraperMode:       "InvalidMode",
-				MaxItems:          150,
+				MaxItems:          1500,
 				YearsOfExperience: []experiences.Id{"invalid"},
 				SeniorityLevels:   []seniorities.Id{"invalid"},
 			}
 			err := args.Validate()
 			Expect(err).To(HaveOccurred())
 			// Should contain multiple error messages
-			Expect(err.Error()).To(ContainSubstring("max items must be less than or equal to 100"))
-			Expect(err.Error()).To(ContainSubstring("scraper mode not supported"))
-			Expect(err.Error()).To(ContainSubstring("years of experience not supported"))
-			Expect(err.Error()).To(ContainSubstring("seniority level not supported"))
+			Expect(errors.Is(err, profile.ErrMaxItemsTooLarge)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrScraperModeNotSupported)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrExperienceNotSupported)).To(BeTrue())
+			Expect(errors.Is(err, profile.ErrSeniorityNotSupported)).To(BeTrue())
 		})
 	})
 
