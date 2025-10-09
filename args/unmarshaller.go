@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	linkedinProfile "github.com/masa-finance/tee-types/args/linkedin/profile"
 	"github.com/masa-finance/tee-types/types"
 )
 
@@ -131,7 +130,7 @@ func unmarshalLinkedInArguments(jobType types.JobType, args map[string]any) (Job
 
 	switch minimal.QueryType {
 	case types.CapSearchByProfile:
-		linkedInArgs := &linkedinProfile.Arguments{}
+		linkedInArgs := &LinkedInProfileArguments{}
 		if err := unmarshalToStruct(args, linkedInArgs); err != nil {
 			return nil, fmt.Errorf("failed to unmarshal LinkedIn job arguments: %w", err)
 		}

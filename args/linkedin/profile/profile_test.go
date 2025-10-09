@@ -7,6 +7,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
+	"github.com/masa-finance/tee-types/args"
 	"github.com/masa-finance/tee-types/args/linkedin/profile"
 	"github.com/masa-finance/tee-types/types"
 	"github.com/masa-finance/tee-types/types/linkedin/experiences"
@@ -19,7 +20,7 @@ import (
 var _ = Describe("LinkedIn Profile Arguments", func() {
 	Describe("Marshalling and unmarshalling", func() {
 		It("should set default values", func() {
-			args := profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType: types.CapSearchByProfile,
 				Query:     "software engineer",
 			}
@@ -32,7 +33,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should override default values", func() {
-			args := profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				MaxItems:    50,
@@ -49,7 +50,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 
 	Describe("Validation", func() {
 		It("should succeed with valid arguments", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:         types.CapSearchByProfile,
 				Query:             "software engineer",
 				ScraperMode:       profiletypes.ScraperModeShort,
@@ -64,7 +65,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with max items too large", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
@@ -76,7 +77,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid scraper mode", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: "InvalidMode",
@@ -88,7 +89,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid years of experience", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:         types.CapSearchByProfile,
 				Query:             "software engineer",
 				ScraperMode:       profiletypes.ScraperModeShort,
@@ -102,7 +103,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid years at current company", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:             types.CapSearchByProfile,
 				Query:                 "software engineer",
 				ScraperMode:           profiletypes.ScraperModeShort,
@@ -116,7 +117,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid seniority level", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:       types.CapSearchByProfile,
 				Query:           "software engineer",
 				ScraperMode:     profiletypes.ScraperModeShort,
@@ -129,7 +130,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid function", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
@@ -143,7 +144,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid industry", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
@@ -157,7 +158,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should handle multiple validation errors", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:         types.CapSearchByProfile,
 				Query:             "software engineer",
 				ScraperMode:       "InvalidMode",
@@ -177,7 +178,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 
 	Describe("GetCapability", func() {
 		It("should return the query type", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType: types.CapSearchByProfile,
 			}
 			Expect(args.GetCapability()).To(Equal(types.CapSearchByProfile))
@@ -186,7 +187,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 
 	Describe("ValidateForJobType", func() {
 		It("should succeed with valid job type and capability", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
@@ -197,7 +198,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail with invalid job type", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByQuery,
 				Query:       "software engineer",
 				ScraperMode: profiletypes.ScraperModeShort,
@@ -208,7 +209,7 @@ var _ = Describe("LinkedIn Profile Arguments", func() {
 		})
 
 		It("should fail if base validation fails", func() {
-			args := &profile.Arguments{
+			args := args.LinkedInProfileArguments{
 				QueryType:   types.CapSearchByProfile,
 				Query:       "software engineer",
 				ScraperMode: "InvalidMode",
